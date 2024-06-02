@@ -1,8 +1,27 @@
 <html>
     <head>
-
+        <meta charset="UTF-8">
+        <title>Reservierungen</title>
+        <!-- style-->
+        <link rel="stylesheet" type="text/css" href="style.css">
+        <script type="text/JavaScript" src="functions.js"></script>
     </head>
     <body>
+        <label for="getKundenID">KundenID:</label>
+        <input type="text" id="getKundenID">
+        <button class="submit" onclick="getKundenname(document.getElementById('getKundenID').innerHTML)">
+            Der Name
+        </button><br><br>
+        <p id="output"></p>
+        <h1>Sitzplätze</h1>
+        <table style="width: 80%;" id="Sitze">
         
+        </table>
+
+        <script>
+            function showKundenname(KundenID){
+                document.getElementById('output').innerHTML = getKundenname(KundenID)
+            }
+        </script>
     </body>
 </html>

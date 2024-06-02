@@ -16,12 +16,44 @@
             $su = mysqli_fetch_array($suchet);
         }
     }
+
 ?>
 <html>
     <head>
-
+    <meta charset="UTF-8">
+        <title>Reservierungen</title>
+        <!-- style-->
+        <link rel="stylesheet" type="text/css" href="style.css">
     </head>
     <body>
+        
+        <script>
+            function showKundenname(KundenID){
+                let request = new XMLHttpRequest();
+                request.open('post', 'index.php', true);
+                request.send(KundenID)
+                document.getElementById('output').innerHTML = <?php echo getKundenname($_POST['KundenID']) ?>
+            }
+        </script>
+        
+
+        <form action="getKundennamen.php" method="post">
+            Name: <input type="text" name="name" /><br />
+            <input type="Submit" value="Absenden" />
+        </form>
+
         <p><?php echo $su['Name']; ?></p>
+        <label for="getKundenID">KundenID:</label>
+        <input type="text" id="getKundenID">
+        <button class="submit" onclick="showKundenname(document.getElementById('getKundenID').innerHTML)">
+            Der Name
+        </button><br><br>
+        <p id="output"></p>
+        <h1>Sitzplätze</h1>
+        <table style="width: 80%;" id="Sitze">
+        
+        </table>
+
+        
     </body>
 </html>

@@ -2,7 +2,7 @@
     define('host', 'localhost');
     define("user", "AdminReservierung");
     define("pass","Romania1234");
-    define("db","sitzordnung");
+    define("db","Sitzordnung");
 
     $con = mysqli_connect(host, user, pass, db);
     if(!$con){
@@ -23,26 +23,17 @@
     <meta charset="UTF-8">
         <title>Reservierungen</title>
         <!-- style-->
-        <link rel="stylesheet" type="text/css" href="style.css">
+        <!--<link rel="stylesheet" type="text/css" href="style.css">-->
     </head>
     <body>
         
-        <script>
-            function showKundenname(KundenID){
-                let request = new XMLHttpRequest();
-                request.open('post', 'index.php', true);
-                request.send(KundenID)
-                document.getElementById('output').innerHTML = <?php echo getKundenname($_POST['KundenID']) ?>
-            }
-        </script>
-        
 
-        <form action="getKundennamen.php" method="post">
-            Name: <input type="text" name="name" /><br />
-            <input type="Submit" value="Absenden" />
+        <form action=Bestätigung.php method="post">
+            KundenID: <input id="Name" type="text" name="KundenID"><br>
+            <button type="Submit">Namen kriegen</button>
         </form>
 
-        <p><?php echo $su['Name']; ?></p>
+        <p><?php echo $su['KundenID']; ?></p>
         <label for="getKundenID">KundenID:</label>
         <input type="text" id="getKundenID">
         <button class="submit" onclick="showKundenname(document.getElementById('getKundenID').innerHTML)">

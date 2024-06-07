@@ -1,3 +1,6 @@
+<?php
+    error_reporting(E_NOTICE); 
+?>
 <html>
     <head>
     <meta charset="UTF-8">
@@ -53,7 +56,7 @@
 				</td>
 			</tr>
 		</table>
-
+        <p id="output"></p>
     </body>
     
     <!-- script-->
@@ -70,6 +73,7 @@
                     data: {Action:"set",Kundenname:Kundenname,Sitz:Sitz},
                     success: function(data){
                         console.log("->", data);
+                        document.getElementById('output').innerHTML=data;
                     },
                     error: function(data){
                         console.error("error", data);
@@ -89,6 +93,7 @@
                     data: {Action:"get",Auswahl:Auswahl,Inhalt:Inhalt},
                     success: function(data){
                         console.log("->", data);
+                        document.getElementById('output').innerHTML=data;
                     },
                     error: function(data){
                         console.error("error", data);
@@ -103,6 +108,7 @@
                     data: {Action:"delete",Inhalt:document.getElementById('delete').value},
                     success: function(data){
                         console.log("->", data);
+                        document.getElementById('output').innerHTML=data;
                     },
                     error: function(data){
                         console.error("error", data);

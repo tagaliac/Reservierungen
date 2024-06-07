@@ -1,22 +1,11 @@
 <?php
-    define('host', 'localhost');
-    define("user", "AdminReservierung");
-    define("pass","Romania1234");
-    define("db","Sitzordnung");
-
-    function connectToDB(){
-        $con = mysqli_connect(host, user, pass, db);
-        if(!$con){
-            echo "keine Verbindung zur Datenbank";
-        }
-        return $con;
-    }
+    require "DatabaseCon.php";
 
     if($_SERVER["REQUEST_METHOD"]=="POST"){
         $con = connectToDB();
         if($con){
-            $Sitzreihen = htmlspecialchars($_POST['Sitzreihe']);
-            $Länge = htmlspecialchars($_POST['Laenge']);
+            $Sitzreihen = intval(htmlspecialchars($_POST['Sitzreihe']));
+            $Länge = intval(htmlspecialchars($_POST['Laenge']));
             //echo $Sitzreihen*$Länge;
             //echo ' und ';
             $connect = mysqli_query($con, "SELECT COUNT(*) FROM sitzplatz;");

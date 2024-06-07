@@ -1,23 +1,5 @@
 <?php   
-    require ".\Bestaetigung.php";
-
-    //define('host', 'localhost');
-    //define("user", "AdminReservierung");
-    //define("pass","Romania1234");
-    //define("db","Sitzordnung");
-
-    $con = mysqli_connect(host, user, pass, db);
-    if(!$con){
-        echo "keine Verbindung zur Datenbank";
-    }else{
-        $suchet = mysqli_query($con, "SELECT * FROM kunde");
-        if(!$suchet){
-            echo "nichts laden";
-        }
-        else{
-            $su = mysqli_fetch_array($suchet);
-        }
-    }
+    
 
 ?>
 <html>
@@ -27,10 +9,16 @@
         <!-- style-->
         <!--<link rel="stylesheet" type="text/css" href="style.css">-->
         <script src=".\JQuery.js"></script>
+        <nav>
+                <ul class="nav_links">
+                    <li><a href="index.php">Sitzplätze</a></li>
+                    <li><a href="Reservierungen.php">Reservierungen</a></li>
+                </ul>
+            </nav>
     </head>
     <body>
         
-        <form action=Bestaetigung.php method="post">
+        <form action=Funktionen\Bestaetigung.php method="post">
             KundenID: <input id="Name" type="text" name="KundenID"><br>
             <button type="Submit">Namen kriegen</button>
         </form>
@@ -49,23 +37,25 @@
             
         </table>
 
-        <button class="submit" onclick="setSitzreihe()">
-            SitzeTest
-        </button>
-
         
-
-    </body>
-    <!-- script-->
-    <script>
+        <label for="anzahlSitzplätzeReihen">Anzahl der Reihen an Sitzplätzen:</label>
+        <input type="number" id="anzahlSitzplätzeReihen" value="3"></br>
+        <label for="SitzeProReihe">Anzahl der Sitzplätze pro Reihe:</label>
+        <input type="number" id="SitzeProReihe" value="5"></br>
+        <button class="submit" onclick="setSitzreihe()">
+            setze Sitze
+        </button>
+        
+        <!-- script-->
+        <script>
             function setSitzreihe(){
-                let Sitzreihen = 2
-                let Länge_der_Sitzreihen = 7
+                let Sitzreihen = document.getElementById('anzahlSitzplätzeReihen').value;
+                let Länge_der_Sitzreihen = document.getElementById('SitzeProReihe').value;
                 setSitzeDB(Sitzreihen, Länge_der_Sitzreihen);
             }
             function setSitzeDB(Sitzplätze, Länge){
                 $.ajax({
-                    url: "Sitzplanerstellung.php",
+                    url: "Funktionen/Sitzplanerstellung.php",
                     type: "POST",
                     data: {Sitzreihe:Sitzplätze,Laenge:Länge},
                     success: function(data){
@@ -76,6 +66,8 @@
                     }
                 });
             }
-</script>
         </script> 
+
+    </body>
+        
 </html>

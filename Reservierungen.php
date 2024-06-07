@@ -32,8 +32,24 @@
                     </button>
 				</td>
 				<td style="width:33%">
+                    <label for="wahl">Wähle Suchoption:</label>
+                    <select name="Auswahl" id="wahl">
+                        <option value="Name">Name des Kunden</option>
+                        <option value="Sitz">Sitzplatz</option>
+                        <option value="Reservierung">ReservierungsID</option>
+                    </select>
+                    <label for="inhalt">Inhalt:</label>
+                    <input type="text" id="inhalt"></br>
+                    <button class="submit" onclick="getReservierung()">
+                        Suche
+                    </button>
 				</td>
                 <td style="width:33%">
+                <label for="delete">Lösche Reservierung mit ID:</label>
+                    <input type="number" id="delete"></br>
+                    <button class="submit" onclick="deleteReservierung()">
+                        Lösche Reservierung
+                    </button>
 				</td>
 			</tr>
 		</table>
@@ -53,7 +69,40 @@
                     type: "POST",
                     data: {Action:"set",Kundenname:Kundenname,Sitz:Sitz},
                     success: function(data){
-                        console.log("aaa->", data);
+                        console.log("->", data);
+                    },
+                    error: function(data){
+                        console.error("error", data);
+                    }
+                });
+            }
+
+            function getReservierung(){
+                let Auswahl = document.getElementById('wahl').value;
+                let Inhalt = document.getElementById('inhalt').value;
+                getReservierungDB(Auswahl,Inhalt);
+            }
+            function getReservierungDB(Auswahl, Inhalt){
+                $.ajax({
+                    url: "Funktionen/MachReservierung.php",
+                    type: "POST",
+                    data: {Action:"get",Auswahl:Auswahl,Inhalt:Inhalt},
+                    success: function(data){
+                        console.log("->", data);
+                    },
+                    error: function(data){
+                        console.error("error", data);
+                    }
+                });
+            }
+
+            function deleteReservierung(){
+                $.ajax({
+                    url: "Funktionen/MachReservierung.php",
+                    type: "POST",
+                    data: {Action:"delete",Inhalt:document.getElementById('delete').value},
+                    success: function(data){
+                        console.log("->", data);
                     },
                     error: function(data){
                         console.error("error", data);

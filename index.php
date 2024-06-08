@@ -17,27 +17,7 @@
             </nav>
     </head>
     <body>
-        
-        <form action=Funktionen\Bestaetigung.php method="post">
-            KundenID: <input id="Name" type="text" name="KundenID"><br>
-            <button type="Submit">Namen kriegen</button>
-        </form>
-
-        <p><?php echo $su['KundenID']; ?></p>
-        <label for="getKundenID">KundenID:</label>
-        <input type="text" id="getKundenID">
-        <button class="submit" onclick="showKundenname(document.getElementById('getKundenID').innerHTML)">
-            Der Name
-        </button><br><br>
-        <p id="output"></p>
-        <h1>Sitzplätze</h1>
-
-        <!-- Tabelle-->
-        <table style="width: 80%;" id="Sitze">
-            
-        </table>
-
-        
+        <!-- Zum Erstellen aller Sitzplätze-->
         <label for="anzahlSitzplätzeReihen">Anzahl der Reihen an Sitzplätzen:</label>
         <input type="number" id="anzahlSitzplätzeReihen" value="3"></br>
         <label for="SitzeProReihe">Anzahl der Sitzplätze pro Reihe:</label>
@@ -45,6 +25,14 @@
         <button class="submit" onclick="setSitzreihe()">
             setze Sitze
         </button>
+
+        <!-- übersicht der Sitzplätze-->
+        <button class="submit" onclick="displaySitze()">
+            Aufzeigen
+        </button>
+        <p id="übersichtSitze">
+
+        </p>
         
         <!-- script-->
         <script>
@@ -57,7 +45,7 @@
                 $.ajax({
                     url: "Funktionen/Sitzplanerstellung.php",
                     type: "POST",
-                    data: {Sitzreihe:Sitzplätze,Laenge:Länge},
+                    data: {Action:" ",Sitzreihe:Sitzplätze,Laenge:Länge},
                     success: function(data){
                         console.log("->", data);
                     },
@@ -65,6 +53,38 @@
                         console.error("error", data);
                     }
                 });
+            }
+            function displaySitze(){
+                let Sitzreihen = document.getElementById('anzahlSitzplätzeReihen').value;
+                let Länge = document.getElementById('SitzeProReihe').value;
+                $.ajax({
+                    url: "Funktionen/Sitzplanerstellung.php",
+                    type: "POST",
+                    data: {Action:"display",Sitzreihe:Sitzreihen,Laenge:Länge},
+                    success: function(data){
+                        console.log("->", data);
+                        document.getElementById('übersichtSitze').innerHTML = getStringForDisplay(data,Sitzreihen,Länge);
+                    },
+                    error: function(data){
+                        console.error("error", data);
+                    }
+                });
+            }
+
+            function getStringForDisplay(arrayInfo,Sitzreihen,Länge){
+                result = "";
+                if(arrayInfo.length==(Sitzreihen*Länge)){
+                    for(let i = 0;i<arrayInfo.length;i++){
+                        if(arrayInfo[i]==1){
+                            result.concat(' Sitzplatz an Reihe ', i/Länge, ' und an Stelle ', i%Länge,' begelgt\n');
+                        }else{
+                            result.concat(' Sitzplatz an Reihe ', i/Länge, ' und an Stelle ', i%Länge,' unbelegt\n');
+                        }
+                    }
+                    return result;
+                }else{
+                    return "Array könnte nicht verarbeitet werden"
+                }
             }
         </script> 
 

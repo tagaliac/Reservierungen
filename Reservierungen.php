@@ -1,6 +1,3 @@
-<?php
-    error_reporting(E_NOTICE); 
-?>
 <html>
     <head>
     <meta charset="UTF-8">

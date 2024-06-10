@@ -71,14 +71,17 @@
                 });
             }
 
-            function getStringForDisplay(arrayInfo,Sitzreihen,Länge){
+            function getStringForDisplay(data,Sitzreihen,Länge){
                 result = "";
-                if(arrayInfo.length==(Sitzreihen*Länge)){
-                    for(let i = 0;i<arrayInfo.length;i++){
-                        if(arrayInfo[i]==1){
-                            result.concat(' Sitzplatz an Reihe ', i/Länge, ' und an Stelle ', i%Länge,' begelgt\n');
+                arrayInfo = data.split('|');
+                console.log(arrayInfo.length);
+                if(arrayInfo.length==(Sitzreihen*Länge)+1){
+                    for(let i = 0;i<arrayInfo.length-1;i++){
+                        if(arrayInfo[i]==='1'){
+                            console.log(result);
+                            result= result + " Sitzplatz an Reihe " + Math.floor(i/Länge) + " und an Stelle " + i%Länge + " begelgt<br>";
                         }else{
-                            result.concat(' Sitzplatz an Reihe ', i/Länge, ' und an Stelle ', i%Länge,' unbelegt\n');
+                            result= result + " Sitzplatz an Reihe " + Math.floor(i/Länge) + " und an Stelle " + i%Länge + " nicht begelgt<br>";
                         }
                     }
                     return result;

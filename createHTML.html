@@ -14,10 +14,23 @@
         </button><br><br>
         <p id="output"></p>
         <h1>Sitzplätze</h1>
-        <table style="width: 80%;" id="Sitze">
-        
-        </table>
-
+            <tabel>
+				<svg>
+                    <rect class="blueRectangle" width="50%" height="60"/>
+                </svg>
+				<svg>
+                    <rect class="redRectangle" width="100%" height="50"/>
+                </svg>
+                <svg>
+                    <rect class="blueRectangle" width="100%" height="50"/>
+                </svg>
+				<svg>
+                    <rect class="redRectangle" width="100%" height="50"/>
+                </svg>
+                <svg>
+                    <rect class="redRectangle" width="100%" height="50"/>
+                </svg>
+            </tabel>
         <script>
             function showKundenname(KundenID){
                 document.getElementById('output').innerHTML = getKundenname(KundenID)

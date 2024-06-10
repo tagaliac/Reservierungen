@@ -7,7 +7,7 @@
     <meta charset="UTF-8">
         <title>Reservierungen</title>
         <!-- style-->
-        <!--<link rel="stylesheet" type="text/css" href="style.css">-->
+        <link rel="stylesheet" type="text/css" href="style.css">
         <script src=".\JQuery.js"></script>
         <nav>
                 <ul class="nav_links">
@@ -27,13 +27,12 @@
         </button>
 
         <!-- übersicht der Sitzplätze-->
-        <button class="submit" onclick="displaySitze()">
+        <button class="submit" onclick="displaySitze(false)">
             Aufzeigen
         </button>
         <p id="übersichtSitze">
 
         </p>
-        
         <!-- script-->
         <script>
             function setSitzreihe(){
@@ -54,7 +53,7 @@
                     }
                 });
             }
-            function displaySitze(){
+            function displaySitze(debug){
                 let Sitzreihen = document.getElementById('anzahlSitzplätzeReihen').value;
                 let Länge = document.getElementById('SitzeProReihe').value;
                 $.ajax({
@@ -63,7 +62,12 @@
                     data: {Action:"display",Sitzreihe:Sitzreihen,Laenge:Länge},
                     success: function(data){
                         console.log("->", data);
-                        document.getElementById('übersichtSitze').innerHTML = getStringForDisplay(data,Sitzreihen,Länge);
+                        if(debug){
+                            document.getElementById('übersichtSitze').innerHTML = getStringForDisplay(data,Sitzreihen,Länge);
+                        }else{
+                            document.getElementById('übersichtSitze').innerHTML = zeigeSitze(data,Sitzreihen,Länge);
+                        }
+                        
                     },
                     error: function(data){
                         console.error("error", data);
@@ -87,6 +91,29 @@
                     return result;
                 }else{
                     return "Array könnte nicht verarbeitet werden"
+                }
+            }
+
+            function zeigeSitze(data,Sitzreihen,Länge){
+                result = "<table style='width:80%;'>";
+                arrayInfo = data.split('|');
+                OFFSETWIDTH= 5;
+                if(arrayInfo.length==(Sitzreihen*Länge)+1){
+                    width= Math.floor(100/Länge)-OFFSETWIDTH;
+                    for(let i = 0;i<Sitzreihen;i++){
+                        for(let j=0;j<Länge;j++){
+                            if(arrayInfo[i*Länge+j]==='1'){
+                                result= result + '<svg style="width:'+width+'%"><rect class="blueRectangle" width="100%" height="60"/></svg>';
+                            }else{
+                                result= result + '<svg style="width:'+width+'%"><rect class="redRectangle" width="100%" height="60"/></svg>';
+                            }
+                        }
+                        result=result+"<br>";
+                    }
+                    result = result + "</table>";
+                    return result;
+                }else{
+                    return "Sitze könnten nicht verarbeitet werden"
                 }
             }
         </script> 

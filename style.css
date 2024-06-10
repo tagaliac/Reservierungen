@@ -1,0 +1,10 @@
+.blueRectangle{
+    position: relative;
+    fill:blue;
+    stroke:black;
+}
+.redRectangle{
+    position: relative;
+    fill:red;
+    stroke:black;
+}

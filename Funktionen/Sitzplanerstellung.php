@@ -1,13 +1,22 @@
 <?php
+    /**import Database information*/
     require "DatabaseCon.php";
 
-    /*in debugging deactive*/
-    //error_reporting(E_NOTICE);
+    /**import global variables */
+    $DEBUG_MODUS = json_decode(file_get_contents("..\Globale_Variablen.json"),false)->DEBUG_MODUS;
 
+    /**in debugging deactive*/
+    if(!$DEBUG_MODUS){
+        echo "Debug Modus aktiv\n";
+        error_reporting(E_NOTICE);
+    }
+
+    /**coding */
     if($_SERVER["REQUEST_METHOD"]=="POST"){
         $con = connectToDB();
         $action = $_POST['Action'];
         if($con){
+            /**Wählt Aktion */
             switch ($action){
                 case "display":
                     echo display($con);
@@ -15,15 +24,12 @@
                 default:
                     $Sitzreihen = intval(htmlspecialchars($_POST['Sitzreihe']));
                     $Länge = intval(htmlspecialchars($_POST['Laenge']));
-                    //echo $Sitzreihen*$Länge;
-                    //echo ' und ';
                     $connect = mysqli_query($con, "SELECT COUNT(*) FROM sitzplatz;");
                     if(!$connect){
                         echo "Anzahl der Sitzplätze könnte nicht ermittelt werden";
                     }
                     else{
                         $counter = mysqli_fetch_array($connect)[0];
-                        //echo $counter;
                         if($counter<($Sitzreihen*$Länge)){
                             while($counter<($Sitzreihen*$Länge)){
                                 $counter=$counter+1;
@@ -38,6 +44,7 @@
         }
     }
 
+    /**Fügt Sitzplatz hinzu mit der SitzID $ID */
     function addSitzplatz($ID){
         $con = connectToDB();
         if($con){
@@ -48,6 +55,7 @@
         }
     }
 
+    /**Löscht die Sitzplätze bis auf die Anzahl $übrigeSitze */
     function deleteSitzplätze($übrigeSitze){
         $con = connectToDB();
         if($con){
@@ -58,6 +66,9 @@
         }
     }
 
+    /**gibt ein String zurück, welcher ausdrückt, ob die jeweiligen Sitze belegt sind.
+     * z.B 0|1|0| drückt aus dass der erste und der dritte Sitzplatz unbelegt sind und der zweite belegt
+     */
     function display($con){
         $connect = mysqli_query($con, "SELECT Belegt FROM sitzplatz ORDER BY SitzplatzID;");
         if(!$connect){
@@ -68,6 +79,7 @@
         }
     }
 
+    /**macht aus den Belegungsdaten einen String (siehe display($con)) */
     function convertDataToString($data){
         $result = "";
         $rows = mysqli_fetch_all($data, MYSQLI_ASSOC);

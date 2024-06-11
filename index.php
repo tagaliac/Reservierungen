@@ -1,45 +1,47 @@
 <?php   
-    
-
+    /**import global variables */
+    $DEBUG_MODUS = json_decode(file_get_contents(".\Globale_Variablen.json"),false)->DEBUG_MODUS;
 ?>
 <html>
     <head>
     <meta charset="UTF-8">
         <title>Reservierungen</title>
-        <!-- style-->
         <link rel="stylesheet" type="text/css" href="style.css">
         <script src=".\JQuery.js"></script>
         <nav>
-                <ul class="nav_links">
-                    <li><a href="index.php">Sitzplätze</a></li>
-                    <li><a href="Reservierungen.php">Reservierungen</a></li>
-                </ul>
-            </nav>
+            <ul class="nav_links">
+                <li><a href="index.php">Sitzplätze</a></li>
+                <li><a href="Reservierungen.php">Reservierungen</a></li>
+            </ul>
+        </nav>
     </head>
     <body>
         <!-- Zum Erstellen aller Sitzplätze-->
-        <label for="anzahlSitzplätzeReihen">Anzahl der Reihen an Sitzplätzen:</label>
-        <input type="number" id="anzahlSitzplätzeReihen" value="3"></br>
+        <label for="anzahlSitzreihen">Anzahl der Reihen an Sitzplätzen:</label>
+        <input type="number" id="anzahlSitzreihen" value="3"></br>
         <label for="SitzeProReihe">Anzahl der Sitzplätze pro Reihe:</label>
         <input type="number" id="SitzeProReihe" value="5"></br>
-        <button class="submit" onclick="setSitzreihe()">
+        <button class="submit" onclick="setSitzplätze()">
             setze Sitze
         </button>
 
         <!-- übersicht der Sitzplätze-->
-        <button class="submit" onclick="displaySitze(false)">
+        <button class="submit" onclick="displaySitze(<?php echo $DEBUG_MODUS?>)">
             Aufzeigen
         </button>
         <p id="übersichtSitze">
 
         </p>
+
         <!-- script-->
         <script>
-            function setSitzreihe(){
-                let Sitzreihen = document.getElementById('anzahlSitzplätzeReihen').value;
-                let Länge_der_Sitzreihen = document.getElementById('SitzeProReihe').value;
-                setSitzeDB(Sitzreihen, Länge_der_Sitzreihen);
+            /**definiert die Anzahl an Sitzplätzen */
+            function setSitzplätze(){
+                let Sitzreihen = document.getElementById('anzahlSitzreihen').value;
+                let LängeDerSitzreihen = document.getElementById('SitzeProReihe').value;
+                setSitzeDB(Sitzreihen, LängeDerSitzreihen);
             }
+            /**definiert die Anzahl an Sitzplätzenin der Datenbank */
             function setSitzeDB(Sitzplätze, Länge){
                 $.ajax({
                     url: "Funktionen/Sitzplanerstellung.php",
@@ -53,8 +55,13 @@
                     }
                 });
             }
+
+            /**Stellt die Sitze und deren Belegungen grafisch dar
+             * debug=false:die Plätze werden in Bildern angezeigt
+             * debug=true:die Belegungen werden als Text dargestellt
+             */
             function displaySitze(debug){
-                let Sitzreihen = document.getElementById('anzahlSitzplätzeReihen').value;
+                let Sitzreihen = document.getElementById('anzahlSitzreihen').value;
                 let Länge = document.getElementById('SitzeProReihe').value;
                 $.ajax({
                     url: "Funktionen/Sitzplanerstellung.php",
@@ -75,6 +82,7 @@
                 });
             }
 
+            /**Erstellt den HTML String für die geschriebene Platzdarstellung */
             function getStringForDisplay(data,Sitzreihen,Länge){
                 result = "";
                 arrayInfo = data.split('|');
@@ -90,22 +98,24 @@
                     }
                     return result;
                 }else{
-                    return "Array könnte nicht verarbeitet werden"
+                    return "Array könnte nicht verarbeitet werden<br>"
                 }
             }
 
+            /**Erstellt den HTML Code für die  grafische Darstellung der Plätze*/
             function zeigeSitze(data,Sitzreihen,Länge){
                 result = "<table style='width:80%;'>";
                 arrayInfo = data.split('|');
                 OFFSETWIDTH= 5;
+                console.log(arrayInfo.length)
                 if(arrayInfo.length==(Sitzreihen*Länge)+1){
-                    width= Math.floor(100/Länge)-OFFSETWIDTH;
-                    for(let i = 0;i<Sitzreihen;i++){
+                    width=Math.floor(100/Länge)-OFFSETWIDTH;
+                    for(let i=0;i<Sitzreihen;i++){
                         for(let j=0;j<Länge;j++){
                             if(arrayInfo[i*Länge+j]==='1'){
-                                result= result + '<svg style="width:'+width+'%"><rect class="blueRectangle" width="100%" height="60"/></svg>';
-                            }else{
                                 result= result + '<svg style="width:'+width+'%"><rect class="redRectangle" width="100%" height="60"/></svg>';
+                            }else{
+                                result= result + '<svg style="width:'+width+'%"><rect class="blueRectangle" width="100%" height="60"/></svg>';
                             }
                         }
                         result=result+"<br>";
@@ -113,7 +123,7 @@
                     result = result + "</table>";
                     return result;
                 }else{
-                    return "Sitze könnten nicht verarbeitet werden"
+                    return "Sitze könnten nicht verarbeitet werden<br>"
                 }
             }
         </script> 

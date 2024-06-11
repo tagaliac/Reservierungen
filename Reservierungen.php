@@ -2,15 +2,14 @@
     <head>
     <meta charset="UTF-8">
         <title>Reservierungen</title>
-        <!-- style-->
         <!--<link rel="stylesheet" type="text/css" href="style.css">-->
         <script src=".\JQuery.js"></script>
-            <nav>
-                <ul class="nav_links">
-                    <li><a href="index.php">Sitzplätze</a></li>
-                    <li><a href="Reservierungen.php">Reservierungen</a></li>
-                </ul>
-            </nav>
+        <nav>
+            <ul class="nav_links">
+                <li><a href="index.php">Sitzplätze</a></li>
+                <li><a href="Reservierungen.php">Reservierungen</a></li>
+            </ul>
+        </nav>
     </head>
     <body>
         <h1>Reservierungen</h1>
@@ -45,7 +44,7 @@
                     </button>
 				</td>
                 <td style="width:33%">
-                <label for="delete">Lösche Reservierung mit ID:</label>
+                    <label for="delete">Lösche Reservierung mit ID:</label>
                     <input type="number" id="delete"></br>
                     <button class="submit" onclick="deleteReservierung()">
                         Lösche Reservierung
@@ -53,16 +52,19 @@
 				</td>
 			</tr>
 		</table>
+        <!--Ausgabefeld-->
         <p id="output"></p>
     </body>
     
     <!-- script-->
     <script>
+            /**fügt die Rerservierung hinzu (Variablen in den Feldern definiert) */
             function setReservierung(){
                 let Kundenname = document.getElementById('setKundenname').value;
                 let Sitz = document.getElementById('setSitz').value;
                 setReservierungDB(Kundenname, Sitz);
             }
+            /**fügt die Rerservierung in der Datenbank hinzu */
             function setReservierungDB(Kundenname, Sitz){
                 $.ajax({
                     url: "Funktionen/MachReservierung.php",
@@ -78,11 +80,13 @@
                 });
             }
 
+            /**gibt alle Reservierungsdaten zurück (Variablen in den Feldern definiert) */
             function getReservierung(){
                 let Auswahl = document.getElementById('wahl').value;
                 let Inhalt = document.getElementById('inhalt').value;
                 getReservierungDB(Auswahl,Inhalt);
             }
+            /**gibt alle Reservierungsdaten aus der Datenbank zurück */
             function getReservierungDB(Auswahl, Inhalt){
                 $.ajax({
                     url: "Funktionen/MachReservierung.php",
@@ -98,6 +102,7 @@
                 });
             }
 
+            /**löscht die Reservierung (Variablen in den Feldern definiert) */
             function deleteReservierung(){
                 $.ajax({
                     url: "Funktionen/MachReservierung.php",

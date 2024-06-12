@@ -3,7 +3,8 @@
     require "DatabaseCon.php";
 
     /**import global variables */
-    $DEBUG_MODUS = json_decode(file_get_contents("..\Globale_Variablen.json"),false)->DEBUG_MODUS;
+    $path = "..\Globale_Variablen.json";
+    $DEBUG_MODUS = json_decode(file_get_contents($path),false)->DEBUG_MODUS;
 
     /**in debugging deactive*/
     if(!$DEBUG_MODUS){
@@ -20,6 +21,23 @@
             switch ($action){
                 case "display":
                     echo display($con);
+                    break;
+                case "get":
+                    $Sitzreihen = json_decode(file_get_contents($path),false)->Sitzreihen;
+                    $SitzeProReihe = json_decode(file_get_contents($path),false)->SitzeProReihe;
+                    echo $Sitzreihen . "|" . $SitzeProReihe;
+                    break;
+                case "set":
+                    $jsonData=[
+                        "DEBUG_MODUS" => $DEBUG_MODUS,
+                        "Sitzreihen" => intval(htmlspecialchars($_POST['Sitzreihe'])),
+                        "SitzeProReihe" => intval(htmlspecialchars($_POST['Laenge']))
+                    ];
+                    $jsonString = json_encode($jsonData, JSON_PRETTY_PRINT);
+                    $fp = fopen($path, 'w');
+                    fwrite($fp, $jsonString);
+                    fclose($fp);
+                    echo "erfolgreich in JSON gespeichert";
                     break;
                 default:
                     $Sitzreihen = intval(htmlspecialchars($_POST['Sitzreihe']));

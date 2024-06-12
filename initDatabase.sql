@@ -4,7 +4,8 @@ use sitzordnung;
 
 create table kunde(
     KundenID int PRIMARY KEY AUTO_INCREMENT,
-    Kundenname varchar(127) NOT NULL
+    Kundenname varchar(127) NOT NULL,
+    Gezahlt boolean DEFAULT 0
 );
 
 create table sitzplatz(

@@ -1,6 +1,6 @@
-.blueRectangle{
+.greenRectangle{
     position: relative;
-    fill:blue;
+    fill:rgb(0, 255, 0);
     stroke:black;
 }
 .redRectangle{

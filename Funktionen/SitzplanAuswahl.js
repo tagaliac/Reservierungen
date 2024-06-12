@@ -54,7 +54,7 @@
                             document.getElementById('übersichtSitze').innerHTML = getStringForDisplay(data,
                                                                                                     parseInt(sitze[0]),parseInt(sitze[1]));
                         }else{
-                            document.getElementById('übersichtSitze').innerHTML = zeigeSitze(data,Sitze[0],Sitze[1]);
+                            document.getElementById('übersichtSitze').innerHTML = zeigeSitze(data,sitze[0],sitze[1]);
                         }
                         
                     },

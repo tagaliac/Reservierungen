@@ -33,9 +33,7 @@
         </button>
 
         <!-- übersicht der Sitzplätze-->
-        <button class="submit" onclick="displaySitze(<?php echo $DEBUG_MODUS?>,
-                                                    document.getElementById('anzahlSitzreihen').value,
-                                                    document.getElementById('SitzeProReihe').value)">
+        <button class="submit" onclick="displaySitze(<?php echo $DEBUG_MODUS;?>)">
             Aufzeigen
         </button>
         <h1>Reservierungen</h1>

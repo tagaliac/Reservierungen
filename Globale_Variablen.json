@@ -1,5 +1,5 @@
 {
-    "DEBUG_MODUS": true,
+    "DEBUG_MODUS": false,
     "Sitzreihen": 3,
     "SitzeProReihe": 5
 }

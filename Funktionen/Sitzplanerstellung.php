@@ -8,8 +8,9 @@
 
     /**in debugging deactive*/
     if(!$DEBUG_MODUS){
-        echo "Debug Modus aktiv\n";
         error_reporting(E_NOTICE);
+    }else{
+        echo "Debug Modus aktiv\n";
     }
 
     /**coding */

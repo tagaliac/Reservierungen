@@ -26,13 +26,15 @@
                 case "get":
                     $Sitzreihen = json_decode(file_get_contents($path),false)->Sitzreihen;
                     $SitzeProReihe = json_decode(file_get_contents($path),false)->SitzeProReihe;
-                    echo $Sitzreihen . "|" . $SitzeProReihe;
+                    $SitzProTisch = json_decode(file_get_contents($path),false)->SitzeProTisch;
+                    echo $Sitzreihen . "|" . $SitzeProReihe . "|" . $SitzProTisch;
                     break;
                 case "set":
                     $jsonData=[
                         "DEBUG_MODUS" => $DEBUG_MODUS,
                         "Sitzreihen" => intval(htmlspecialchars($_POST['Sitzreihe'])),
-                        "SitzeProReihe" => intval(htmlspecialchars($_POST['Laenge']))
+                        "SitzeProReihe" => intval(htmlspecialchars($_POST['Laenge'])),
+                        "SitzeProTisch" => intval(htmlspecialchars($_POST['SitzeProTische']))
                     ];
                     $jsonString = json_encode($jsonData, JSON_PRETTY_PRINT);
                     $fp = fopen($path, 'w');

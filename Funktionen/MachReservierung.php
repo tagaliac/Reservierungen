@@ -29,6 +29,9 @@
                     $inhalt = $_POST['Inhalt'];
                     echo getReservierung($auswahl,$inhalt,$con);
                     break;
+                case "getFreienSitz":
+                    return getFreiePlätze($con);
+                    break;
                 case "delete":
                     $inhalt = $_POST['Inhalt'];
                     echo deleteReservierung($inhalt,$con);
@@ -178,6 +181,18 @@
             changeSitzBelegung($Sitz,true,$con);
         }else{
             echo "erfolgreich gelöscht\n";
+        }
+    }
+
+    function getFreiePlätze($con){
+        $connect = mysqli_query($con, "Select SitzplatzID FROM sitzplatz WHERE Belegt=false;");
+        if(!$connect){
+            $rows = mysqli_fetch_all($connect, MYSQLI_ASSOC);
+            foreach ($rows as $row){
+                return $row["Belegt"];
+            }
+        }else{
+            return 0;
         }
     }
 ?>

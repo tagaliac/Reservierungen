@@ -1,21 +1,24 @@
 /**definiert die Anzahl an Sitzplätzen */
-            function setSitzplätze(Sitzreihen, SitzeProReihe){
-                SpeichertSitzplätzeGlobal(Sitzreihen, SitzeProReihe);
-                setSitzeDB(Sitzreihen, SitzeProReihe);
-            }
-            function SpeichertSitzplätzeGlobal(Sitzreihen, SitzeProReihe){
-                $.ajax({
-                    url: "Funktionen/Sitzplanerstellung.php",
-                    type: "POST",
-                    data: {Action:"set",Sitzreihe:Sitzreihen,Laenge:SitzeProReihe},
-                    success: function(data){
-                        console.log("->", data);
-                    },
-                    error: function(data){
-                        console.error("error", data);
-                    }
-                });
-            }
+function setSitzplätze(Tischreihen, TischeProReihe, SitzeProTische){
+    Sitzreihen = Tischreihen *2;
+    SitzeProReihe = TischeProReihe * (SitzeProTische/2);
+    SpeichertSitzplätzeGlobal(Sitzreihen, SitzeProReihe, SitzeProTische);
+    setSitzeDB(Sitzreihen, SitzeProReihe);
+}
+/**Speichert die Anzahl an Sitzen als Gloable Variablen */
+function SpeichertSitzplätzeGlobal(Sitzreihen, SitzeProReihe, SitzeProTische){
+    $.ajax({
+        url: "Funktionen/Sitzplanerstellung.php",
+        type: "POST",
+        data: {Action:"set",Sitzreihe:Sitzreihen,Laenge:SitzeProReihe, SitzeProTische:SitzeProTische},
+        success: function(data){
+            console.log("->", data);
+        },
+        error: function(data){
+            console.error("error", data);
+        }
+    });
+}
             /**definiert die Anzahl an Sitzplätzen in der Datenbank */
             function setSitzeDB(Sitzplätze, Länge){
                 $.ajax({
@@ -51,10 +54,10 @@
                     success: function(data){
                         console.log("->", data);
                         if(debug){
-                            document.getElementById('übersichtSitze').innerHTML = getStringForDisplay(data,
-                                                                                                    parseInt(sitze[0]),parseInt(sitze[1]));
+                            document.getElementById('übersichtSitze').innerHTML = getStringForDisplay(data,parseInt(sitze[0]),parseInt(sitze[1]),);
                         }else{
-                            document.getElementById('übersichtSitze').innerHTML = zeigeSitze(data,sitze[0],sitze[1]);
+                            document.getElementById('übersichtSitze').innerHTML = zeigeSitze(data,parseInt(sitze[0]),
+                                                                                            parseInt(sitze[1]),parseInt(sitze[2]));
                         }
                         
                     },
@@ -102,22 +105,31 @@
             }
 
             /**Erstellt den HTML Code für die  grafische Darstellung der Plätze*/
-            function zeigeSitze(data,Sitzreihen,Länge){
-                result = "<table style='width:80%;'>";
+            function zeigeSitze(data,Sitzreihen,Länge,SitzeProTische){
+                result = '<table class="anzeige" style="width:80%">';
                 arrayInfo = data.split('|');
                 OFFSETWIDTH= 5;
-                console.log(arrayInfo.length)
                 if(arrayInfo.length==(Sitzreihen*Länge)+1){
-                    width=Math.floor(100/Länge)-OFFSETWIDTH;
+                    result = result + '<tr>';
+                    widthTische=Math.floor(100/Länge);
+                    console.log(SitzeProTische)
                     for(let i=0;i<Sitzreihen;i++){
                         for(let j=0;j<Länge;j++){
-                            if(arrayInfo[i*Länge+j]==='1'){
-                                result= result + '<svg style="width:'+width+'%"><rect class="redRectangle" width="100%" height="60"/></svg>';
-                            }else{
-                                result= result + '<svg style="width:'+width+'%"><rect class="greenRectangle" width="100%" height="60"/></svg>';
+                            switch (j%(SitzeProTische/2)){
+                                case 0:
+                                    result= result + erstelleHtmlRechtecke(arrayInfo[i*Länge+j]);
+                                    break;
+                                case (SitzeProTische/2)-1:
+                                    result=result + erstelleHtmlRechtecke(arrayInfo[i*Länge+j]) +'<svg style="width:'+widthTische/OFFSETWIDTH+'%"><rect class="emptyRectangle" width="100%" height="100%"/></svg>';
+                                    break;
+                                default:
+                                    result=result +erstelleHtmlRechtecke(arrayInfo[i*Länge+j])
                             }
                         }
-                        result=result+"<br>";
+                        if(i%2==1){
+                            result=result+"<br><br><br>";
+                        }
+                        result = result + '</tr>';
                     }
                     result = result + "</table>";
                     return result;
@@ -125,3 +137,11 @@
                     return "Sitze könnten nicht verarbeitet werden<br>"
                 }
             }
+
+function erstelleHtmlRechtecke(Belegung){
+    if(Belegung==='1'){
+        return '<svg style="width:'+widthTische+'%"><rect class="redRectangle" width="100%" height="100%"></svg>';
+    }else{
+        return '<svg style="width:'+widthTische+'%"><rect class="greenRectangle" width="100%" height="100%"/></svg>';
+    }
+}

@@ -24,11 +24,15 @@
     </head>
     <body>
         <!-- Zum Erstellen aller Sitzplätze-->
-        <label for="anzahlSitzreihen">Anzahl der Reihen an Sitzplätzen:</label>
-        <input type="number" id="anzahlSitzreihen" value="3"></br>
-        <label for="SitzeProReihe">Anzahl der Sitzplätze pro Reihe:</label>
-        <input type="number" id="SitzeProReihe" value="5"></br>
-        <button class="submit" onclick="setSitzplätze(document.getElementById('anzahlSitzreihen').value,document.getElementById('SitzeProReihe').value)">
+        <label for="anzahlTischreihen">Anzahl der Tischreihen:</label>
+        <input type="number" id="anzahlTischreihen" value="3"></br>
+        <label for="TischeProReihe">Anzahl der Tische pro Reihe:</label>
+        <input type="number" id="TischeProReihe" value="5"></br>
+        <label for="SitzeProTisch">Anzahl der Sitze pro Tisch:</label>
+        <input type="number" id="SitzeProTisch" value="4"></br>
+        <button class="submit" onclick="setSitzplätze(document.getElementById('anzahlTischreihen').value,
+                                                    document.getElementById('TischeProReihe').value,
+                                                    document.getElementById('SitzeProTisch').value)">
             setze Sitze
         </button>
 

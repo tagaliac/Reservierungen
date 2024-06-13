@@ -8,3 +8,8 @@
     fill:red;
     stroke:black;
 }
+.emptyRectangle{
+    position: relative;
+    fill:rgba(255, 255, 255, 0);
+    stroke:rgb(255, 255, 255, 0);
+}

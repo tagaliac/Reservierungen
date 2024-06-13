@@ -2,7 +2,13 @@
 function setReservierung(){
     let Kundenname = document.getElementById('setKundenname').value;
     let Sitz = document.getElementById('setSitz').value;
-    setReservierungDB(Kundenname, Sitz);
+    if(Sitz===""){
+        getNächstenFreienSitz().then((data) => {
+            setReservierungDB(Kundenname, data);
+        }).catch((e)=> {console.log(e)});
+    }else{
+        setReservierungDB(Kundenname, Sitz);
+    }
 }
 /**fügt die Rerservierung in der Datenbank hinzu */
 function setReservierungDB(Kundenname, Sitz){
@@ -40,6 +46,28 @@ function getReservierungDB(Auswahl, Inhalt){
             console.error("error", data);
         }
     });
+}
+
+function getNächstenFreienSitz(){
+    return new Promise((resolve,reject) =>{
+        $.ajax({
+            url: "Funktionen/MachReservierung.php",
+            type: "POST",
+            data: {Action:"getFreienSitz"},
+            success: function(data){
+                if(data!=0){
+                    resolve(data)
+                }else{
+                    console.log(data)
+                    reject("kein Sitzplatz mehr vorhanden")
+                }
+                
+            },
+            error: function(data){
+                reject(data)
+            }
+        });
+    })
 }
 
 /**löscht die Reservierung (Variablen in den Feldern definiert) */

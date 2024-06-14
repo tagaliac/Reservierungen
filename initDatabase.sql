@@ -9,8 +9,9 @@ create table kunde(
 );
 
 create table sitzplatz(
-    SitzplatzID int PRIMARY KEY,
-    Belegt boolean DEFAULT 0
+    SitzplatzID int PRIMARY KEY AUTO_INCREMENT,
+    Belegt boolean DEFAULT 0,
+    SitzplatzLabel varchar(31) UNIQUE
 );
 
 CREATE TABLE reservierung(

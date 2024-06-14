@@ -46,7 +46,6 @@ function SpeichertSitzplätzeGlobal(Sitzreihen, SitzeProReihe, SitzeProTische){
              * debug=true:die Belegungen werden als Text dargestellt
              */
             function displaySitzeDB(debug, sitze){
-                console.log("passed");
                 $.ajax({
                     url: "Funktionen/Sitzplanerstellung.php",
                     type: "POST",

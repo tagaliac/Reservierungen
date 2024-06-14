@@ -42,6 +42,9 @@
                     fclose($fp);
                     echo "erfolgreich in JSON gespeichert";
                     break;
+                case "setSitz":
+                    return addSitzWithLabel($_POST['label'],$con);
+                    break;
                 default:
                     $Sitzreihen = intval(htmlspecialchars($_POST['Sitzreihe']));
                     $Länge = intval(htmlspecialchars($_POST['Laenge']));
@@ -108,5 +111,14 @@
             $result = $result . $row["Belegt"] . "|";
         }
         return $result;
+    }
+
+    function addSitzWithLabel($label,$con){
+        $connect = mysqli_query($con, "INSERT INTO sitzplatz(SitzplatzLabel) Values ('$label');");
+        if(!$connect){
+            throw "Sitzeintrag könnte nicht erstellt werden";
+        }else{
+            return "Sitzplatz würde erstellt";
+        }
     }
 ?>

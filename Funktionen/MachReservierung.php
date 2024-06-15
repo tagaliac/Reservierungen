@@ -55,11 +55,6 @@
             echo "Sitz fehlt\n";
             return;
         }
-        $connect = mysqli_query($con, "SELECT COUNT(*) FROM sitzplatz;");
-        if($connect&& ($Sitz>mysqli_fetch_array($connect)[0])){
-            echo "Sitz nicht vorhanden\n";
-            return;
-        }
 
         /**Kunden finden */
         if(getKundenID($Kundennamen,$con)==0){
@@ -69,7 +64,7 @@
         
         /**Reservierung erstellt */
         changeSitzBelegung($Sitz,true,$con);
-        $connect = mysqli_query($con, "INSERT INTO reservierung(KundenID,SitzplatzID) VALUES ('$Kunde','$Sitz');");
+        $connect = mysqli_query($con, "INSERT INTO reservierung(KundenID,SitzplatzLabel) VALUES ('$Kunde','$Sitz');");
         if(!$connect){
             echo "Reservierung fehlgeschlagen\n";
             changeSitzBelegung($Sitz,false,$con);
@@ -103,10 +98,10 @@
     function getReservierung($auswahl,$inhalt,$con){
         switch ($auswahl){
             case "Name":
-                $connect = mysqli_query($con, "select kunde.Kundenname as Kundennamen, sitzplatz.SitzplatzID as Sitzplatz,
+                $connect = mysqli_query($con, "select kunde.Kundenname as Kundennamen, sitzplatz.SitzplatzLabel as Sitzplatz,
                                             reservierung.ReservierungsID from reservierung
                                             join kunde on reservierung.KundenID = kunde.KundenID
-                                            join sitzplatz on reservierung.SitzplatzID = sitzplatz.SitzplatzID
+                                            join sitzplatz on reservierung.SitzplatzLabel = sitzplatz.SitzplatzLabel
                                             WHERE kunde.Kundenname='$inhalt';");
                 if(!$connect){
                     return "Daten könnten nicht geladen werden\n";
@@ -115,11 +110,11 @@
                 }
                 break;
             case "Sitz":
-                $connect = mysqli_query($con, "select kunde.Kundenname as Kundennamen, sitzplatz.SitzplatzID as Sitzplatz,
+                $connect = mysqli_query($con, "select kunde.Kundenname as Kundennamen, sitzplatz.SitzplatzLabel as Sitzplatz,
                                             reservierung.ReservierungsID from reservierung
                                             join kunde on reservierung.KundenID = kunde.KundenID
-                                            join sitzplatz on reservierung.SitzplatzID = sitzplatz.SitzplatzID
-                                            WHERE sitzplatz.SitzplatzID='$inhalt';");
+                                            join sitzplatz on reservierung.SitzplatzLabel = sitzplatz.SitzplatzLabel
+                                            WHERE sitzplatz.SitzplatzLabel='$inhalt';");
                 if(!$connect){
                     return "Daten könnten nicht geladen werden\n";
                 }else{
@@ -127,11 +122,11 @@
                 }
                 break;
             default:
-                $connect = mysqli_query($con, "select kunde.Kundenname as Kundennamen, sitzplatz.SitzplatzID as Sitzplatz,
+                $connect = mysqli_query($con, "select kunde.Kundenname as Kundennamen, sitzplatz.SitzplatzLabel as Sitzplatz,
                                         reservierung.ReservierungsID from reservierung
                                         join kunde on reservierung.KundenID = kunde.KundenID
-                                        join sitzplatz on reservierung.SitzplatzID = sitzplatz.SitzplatzID
-                                        WHERE reservierung.ReservierungsID='$inhalt';");
+                                        join sitzplatz on reservierung.SitzplatzLabel = sitzplatz.SitzplatzLabel
+                                        WHERE reservierung.ReservierungsLabel='$inhalt';");
                 if(!$connect){
                     return "Daten könnten nicht geladen werden\n";
                 }else{
@@ -151,7 +146,7 @@
 
     /**erhalte den Sitzplatz mit der ReservierungsID */
     function getSitzplatz($Reservierung,$con){
-        $connect = mysqli_query($con, "SELECT SitzplatzID FROM reservierung WHERE ReservierungsID='$Reservierung';");
+        $connect = mysqli_query($con, "SELECT SitzplatzLabel FROM reservierung WHERE ReservierungsID='$Reservierung';");
         if(!$connect){
             echo "Sitz könnte nicht ermittelt werden\n";
             return null;
@@ -163,7 +158,7 @@
     /**wechselt die Sitzbelegung */
     function changeSitzBelegung($SitzplatzID,$neueBelegung,$con){
         if($SitzplatzID!=null){
-            $connect = mysqli_query($con, "UPDATE sitzplatz SET Belegt = '$neueBelegung' WHERE SitzplatzID='$SitzplatzID';");
+            $connect = mysqli_query($con, "UPDATE sitzplatz SET Belegt = '$neueBelegung' WHERE SitzplatzLabel='$SitzplatzID';");
             if(!$connect){
                 echo "Fehler beim belegen\n";
             }
@@ -172,10 +167,10 @@
     }
 
     /**löscht die Reservierung am Sitzplatz $SitzplatzID */
-    function deleteReservierung($SitzplatzID,$con){
-        $Sitz = getSitzplatz($SitzplatzID,$con);
+    function deleteReservierung($ReservierungsID,$con){
+        $Sitz = getSitzplatz($ReservierungsID,$con);
         changeSitzBelegung($Sitz,false,$con);
-        $connect = mysqli_query($con, "DELETE FROM reservierung WHERE ReservierungsID='$SitzplatzID';");
+        $connect = mysqli_query($con, "DELETE FROM reservierung WHERE ReservierungsID='$ReservierungsID';");
         if(!$connect){
             echo "Daten könnten nicht gelöscht werden\n";
             changeSitzBelegung($Sitz,true,$con);
@@ -185,7 +180,7 @@
     }
 
     function getFreiePlätze($con){
-        $connect = mysqli_query($con, "Select SitzplatzID FROM sitzplatz WHERE Belegt=false;");
+        $connect = mysqli_query($con, "Select SitzplatzLabel FROM sitzplatz WHERE Belegt=false;");
         if(!$connect){
             $rows = mysqli_fetch_all($connect, MYSQLI_ASSOC);
             foreach ($rows as $row){

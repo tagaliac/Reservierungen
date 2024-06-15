@@ -10,7 +10,7 @@ function SpeichertSitzplätzeGlobal(Sitzreihen, SitzeProReihe, SitzeProTische){
     $.ajax({
         url: "Funktionen/Sitzplanerstellung.php",
         type: "POST",
-        data: {Action:"set",Sitzreihe:Sitzreihen,Laenge:SitzeProReihe, SitzeProTische:SitzeProTische},
+        data: {Action:"setVariablen",Sitzreihe:Sitzreihen,Laenge:SitzeProReihe, SitzeProTische:SitzeProTische},
         success: function(data){
             console.log("->", data);
         },
@@ -24,7 +24,7 @@ function SpeichertSitzplätzeGlobal(Sitzreihen, SitzeProReihe, SitzeProTische){
                 $.ajax({
                     url: "Funktionen/Sitzplanerstellung.php",
                     type: "POST",
-                    data: {Action:" ",Sitzreihe:Sitzplätze,Laenge:Länge},
+                    data: {Action:"setSitze",Sitzreihe:Sitzplätze,Laenge:Länge},
                     success: function(data){
                         console.log("->", data);
                     },
@@ -70,7 +70,7 @@ function SpeichertSitzplätzeGlobal(Sitzreihen, SitzeProReihe, SitzeProTische){
                     $.ajax({
                         url: "Funktionen/Sitzplanerstellung.php",
                         type: "POST",
-                        data: {Action:"get"},
+                        data: {Action:"getVariablen"},
                         success: function(data){
                             console.log(data);
                             resolve(data.split("|"))

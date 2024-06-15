@@ -23,13 +23,13 @@
                 case "display":
                     echo display($con);
                     break;
-                case "get":
+                case "getVariablen":
                     $Sitzreihen = json_decode(file_get_contents($path),false)->Sitzreihen;
                     $SitzeProReihe = json_decode(file_get_contents($path),false)->SitzeProReihe;
                     $SitzProTisch = json_decode(file_get_contents($path),false)->SitzeProTisch;
                     echo $Sitzreihen . "|" . $SitzeProReihe . "|" . $SitzProTisch;
                     break;
-                case "set":
+                case "setVariablen":
                     $jsonData=[
                         "DEBUG_MODUS" => $DEBUG_MODUS,
                         "Sitzreihen" => intval(htmlspecialchars($_POST['Sitzreihe'])),
@@ -42,10 +42,7 @@
                     fclose($fp);
                     echo "erfolgreich in JSON gespeichert";
                     break;
-                case "setSitz":
-                    return addSitzWithLabel($_POST['label'],$con);
-                    break;
-                default:
+                case "setSitze":
                     $Sitzreihen = intval(htmlspecialchars($_POST['Sitzreihe']));
                     $Länge = intval(htmlspecialchars($_POST['Laenge']));
                     $connect = mysqli_query($con, "SELECT COUNT(*) FROM sitzplatz;");
@@ -63,6 +60,14 @@
                             deleteSitzplätze($Sitzreihen*$Länge);
                         }
                         echo "Erfolgreich erstellt";
+                    }
+                    break;
+                default:
+                    $connect = mysqli_query($con, $action);
+                    if(!$connect){
+                        throw "Befehl könnte nicht verarbeitet werden";
+                    }else{
+                        echo mysqli_fetch_array($connect)[0];
                     }
             }
         }
@@ -111,14 +116,5 @@
             $result = $result . $row["Belegt"] . "|";
         }
         return $result;
-    }
-
-    function addSitzWithLabel($label,$con){
-        $connect = mysqli_query($con, "INSERT INTO sitzplatz(SitzplatzLabel) Values ('$label');");
-        if(!$connect){
-            throw "Sitzeintrag könnte nicht erstellt werden";
-        }else{
-            return "Sitzplatz würde erstellt";
-        }
     }
 ?>

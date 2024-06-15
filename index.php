@@ -52,8 +52,8 @@
 				<td style="width:33%">
                     <label for="setKundenname">Name des Kunden:</label>
                     <input type="text" id="setKundenname"></br>
-                    <label for="setSitz">Sitznummer:</label>
-                    <input type="number" id="setSitz"></br>
+                    <label for="setSitz">Sitzplatz:</label>
+                    <input type="text" id="setSitz"></br>
                     <button class="submit" onclick="setReservierung()">
                         Bestätige Reservierung
                     </button>
@@ -82,8 +82,9 @@
 		</table>
         <!--Ausgabefeld-->
         <p id="output"></p>
-        <p id="übersichtSitze">
+        <canvas id="bild" width="2000px" height = "2000px">
 
-        </p>
+        </canvas>
     </body>
+    <script type="text/JavaScript" src="./Funktionen/SitzplanAktuell.js"></script>
 </html>

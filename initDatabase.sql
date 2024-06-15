@@ -9,15 +9,14 @@ create table kunde(
 );
 
 create table sitzplatz(
-    SitzplatzID int PRIMARY KEY AUTO_INCREMENT,
-    Belegt boolean DEFAULT 0,
-    SitzplatzLabel varchar(31) UNIQUE
+    SitzplatzLabel varchar(31) PRIMARY KEY,
+    Belegt boolean DEFAULT 0
 );
 
 CREATE TABLE reservierung(
     ReservierungsID int PRIMARY KEY AUTO_INCREMENT,
     KundenID int NOT NULL,
-    SitzplatzID int NOT NULL,
+    SitzplatzLabel varchar(31) NOT NULL,
     FOREIGN KEY (KundenID) REFERENCES kunde(KundenID),
-    FOREIGN KEY (SitzplatzID) REFERENCES sitzplatz(SitzplatzID)
+    FOREIGN KEY (SitzplatzLabel) REFERENCES sitzplatz(SitzplatzLabel)
 );

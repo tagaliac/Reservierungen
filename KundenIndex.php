@@ -24,9 +24,6 @@
     </head>
     <body onload="displaySitze(<?php echo $DEBUG_MODUS?>)">
         <!-- übersicht der Sitzplätze-->
-        <button class="submit" onclick="displaySitze(<?php echo $DEBUG_MODUS?>)">
-            Aufzeigen
-        </button>
         <h1>Reservierungen</h1>
 
         <label for="wahl">Wählen Sie Abholort aus:</label>
@@ -34,19 +31,21 @@
             <option value="Cannstatt">Mellyriton Bad Cannstatt</option>
             <option value="Waiblingen">Boulevard Café Bar Waiblingen</option>
             <option value="Filderstadt">Hotel Sielminger Hof, Filderstadt</option>
-        </select>
-        <label for="inhalt">Name:</label>
-        <input type="text" id="inhalt"></br>
-        <button class="submit" onclick="getReservierung()">
+        </select><br>
+        <label for="setKundenname">Name:</label>
+        <input type="text" id="setKundenname"></br>
+        <label for="setSitz">Sitz:</label>
+        <input type="text" id="setSitz"></br>
+        <button class="submit" onclick="setReservierung()">
             Bestätige Reservierung
         </button>
 
         <!--Ausgabefeld-->
         <p id="output"></p>
-        <p id="übersichtSitze">
-            
-        </p>
+        <canvas id="bild" width="2000px" height = "2000px">
+
+        </canvas>
     </body>
-    
+    <script type="text/JavaScript" src="./Funktionen/SitzplanAktuell.js"></script>
     
 </html>

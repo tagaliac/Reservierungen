@@ -51,7 +51,6 @@ function SpeichertSitzplätzeGlobal(Sitzreihen, SitzeProReihe, SitzeProTische){
                     type: "POST",
                     data: {Action:"display",Sitzreihe:sitze[0],Laenge:sitze[1]},
                     success: function(data){
-                        console.log("->", data);
                         if(debug){
                             document.getElementById('übersichtSitze').innerHTML = getStringForDisplay(data,parseInt(sitze[0]),parseInt(sitze[1]),);
                         }else{
@@ -72,7 +71,6 @@ function SpeichertSitzplätzeGlobal(Sitzreihen, SitzeProReihe, SitzeProTische){
                         type: "POST",
                         data: {Action:"getVariablen"},
                         success: function(data){
-                            console.log(data);
                             resolve(data.split("|"))
                         },
                         error: function(data){

@@ -99,7 +99,7 @@
      * z.B 0|1|0| drückt aus dass der erste und der dritte Sitzplatz unbelegt sind und der zweite belegt
      */
     function display($con){
-        $connect = mysqli_query($con, "SELECT Belegt FROM sitzplatz ORDER BY SitzplatzID;");
+        $connect = mysqli_query($con, "SELECT Belegt FROM sitzplatz ORDER BY SitzplatzLabel;");
         if(!$connect){
             echo "Sitzplätze könnte nicht geladen werden";
             return null;

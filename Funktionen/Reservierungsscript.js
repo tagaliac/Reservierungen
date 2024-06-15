@@ -2,14 +2,15 @@
 function setReservierung(){
     let Kundenname = document.getElementById('setKundenname').value;
     let Sitz = document.getElementById('setSitz').value;
-    setReservierungDB(Kundenname, Sitz);
+    let Bezahlort = document.getElementById('wahl').value;
+    setReservierungDB(Kundenname, Sitz, Bezahlort);
 }
 /**fügt die Rerservierung in der Datenbank hinzu */
-function setReservierungDB(Kundenname, Sitz){
+function setReservierungDB(Kundenname, Sitz, Bezahlort){
     $.ajax({
         url: "Funktionen/MachReservierung.php",
         type: "POST",
-        data: {Action:"set",Kundenname:Kundenname,Sitz:Sitz},
+        data: {Action:"set",Kundenname:Kundenname,Sitz:Sitz,Bezahlort:Bezahlort},
         success: function(data){
             console.log("->", data);
             document.getElementById('output').innerHTML=data;
@@ -22,7 +23,7 @@ function setReservierungDB(Kundenname, Sitz){
 
 /**gibt alle Reservierungsdaten zurück (Variablen in den Feldern definiert) */
 function getReservierung(){
-    let Auswahl = document.getElementById('wahl').value;
+    let Auswahl = document.getElementById('suchOption').value;
     let Inhalt = document.getElementById('inhalt').value;
     getReservierungDB(Auswahl,Inhalt);
 }
@@ -55,7 +56,6 @@ function getNächstenFreienSitz(){
                     console.log(data)
                     reject("kein Sitzplatz mehr vorhanden")
                 }
-                
             },
             error: function(data){
                 reject(data)

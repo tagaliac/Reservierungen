@@ -22,7 +22,7 @@
             }
         ?>
     </head>
-    <body>
+    <body onload="displaySitze(<?php echo $DEBUG_MODUS?>)">
         <!-- Zum Erstellen aller Sitzplätze-->
         <label for="anzahlTischreihen">Anzahl der Tischreihen:</label>
         <input type="number" id="anzahlTischreihen" value="3"></br>
@@ -44,12 +44,13 @@
 
         <table style="width:80%">
 			<tr align="center">
-				<td style="width:33%">Füge Reservierung hinzu</td>
-				<td style="width:33%">Schau Reservierungen</td>
-				<td style="width:33%">Lösche Reservierung</td>
+				<td style="width:25%">Füge Reservierung hinzu</td>
+				<td style="width:25%">Schau Reservierungen</td>
+				<td style="width:25%">Lösche Reservierung</td>
+                <td style="width:25%">Bezahlort</td>
 			</tr>
 			<tr style="font-family: cursive; vertical-align:top" align="center">
-				<td style="width:33%">
+				<td style="width:25%">
                     <label for="setKundenname">Name des Kunden:</label>
                     <input type="text" id="setKundenname"></br>
                     <label for="setSitz">Sitzplatz:</label>
@@ -58,9 +59,9 @@
                         Bestätige Reservierung
                     </button>
 				</td>
-				<td style="width:33%">
+				<td style="width:25%">
                     <label for="wahl">Wähle Suchoption:</label>
-                    <select name="Auswahl" id="wahl">
+                    <select name="Auswahl" id="suchOption">
                         <option value="Name">Name des Kunden</option>
                         <option value="Sitz">Sitzplatz</option>
                         <option value="Reservierung">ReservierungsID</option>
@@ -71,12 +72,20 @@
                         Suche
                     </button>
 				</td>
-                <td style="width:33%">
+                <td style="width:25%">
                     <label for="delete">Lösche Reservierung mit ID:</label>
                     <input type="number" id="delete"></br>
                     <button class="submit" onclick="deleteReservierung()">
                         Lösche Reservierung
                     </button>
+				</td>
+                <td style="width:25%">
+                    <label for="wahl">Wählen Sie Abholort aus:</label>
+                    <select name="Auswahl" id="wahl">
+                        <option value="Cannstatt">Mellyriton Bad Cannstatt</option>
+                        <option value="Waiblingen">Boulevard Café Bar Waiblingen</option>
+                        <option value="Filderstadt">Hotel Sielminger Hof, Filderstadt</option>
+                    </select>
 				</td>
 			</tr>
 		</table>

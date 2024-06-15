@@ -26,7 +26,7 @@ const canvas = document.getElementById("bild");
                 bild.fillText(text,toCoX(StelleX)+(WIDTHBOX*width)/TEXTOFFSET_WIDTH,toCoY(StelleY)+(heigth*HEIGHTBOX)/TEXTOFFSET_HEIGHT)
             }
 
-            async function createCircleWithText(StelleX,StelleY,radius,text,color){
+            async function createCircleWithText(StelleX,StelleY,radius,text){
                 await interactDatabase("INSERT INTO sitzplatz(SitzplatzLabel) VALUES ('"+text+"')").then((e) => {
                     interactDatabase("SELECT Belegt FROM sitzplatz WHERE SitzplatzLabel='"+text+"';").then((data)=>{
                         bild.beginPath();
@@ -49,7 +49,7 @@ const canvas = document.getElementById("bild");
                 for(let i=0;i<(SitzeProTisch*Tische);i++){
                     await createCircleWithText(i%2==0?StelleX:StelleX+2,
                                             StelleY+Math.floor(i/2),
-                                            1,label+(anfangsSitznummer+i),"green")
+                                            1,label+(anfangsSitznummer+i))
                 }
                 
             }
@@ -83,7 +83,7 @@ const canvas = document.getElementById("bild");
             }
 
             createSitzreihe(Reihen[0],Spalten[0],6,5,"V",1,1)
-            /*createSitzreihe(Reihen[0],Spalten[1],6,5,"A",1,1)
+            createSitzreihe(Reihen[0],Spalten[1],6,5,"A",1,1)
             createSitzreihe(Reihen[0],Spalten[2],6,5,"A",31,6)
             createSitzreihe(Reihen[0],Spalten[3],6,7,"A",61,11)
 
@@ -127,5 +127,5 @@ const canvas = document.getElementById("bild");
             createSitzreihe(Reihen[10],Spalten[0],6,5,"Z",1,1)
             createSitzreihe(Reihen[10],Spalten[1],6,5,"K",1,1)
             createSitzreihe(Reihen[10],Spalten[2],6,5,"K",31,6)
-            createSitzreihe(Reihen[10],Spalten[3],6,5,"K",61,11)*/
+            createSitzreihe(Reihen[10],Spalten[3],6,5,"K",61,11)
             

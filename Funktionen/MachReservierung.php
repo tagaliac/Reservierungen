@@ -51,9 +51,9 @@
             echo "Kundenname fehlt\n";
             return;
         }
-        if($Sitz==null){
-            echo "Sitz fehlt\n";
-            return;
+        
+        if($Sitz==null||$Sitz===""){
+            $Sitz = getFreiePlätze($con);
         }
 
         /**Kunden finden */
@@ -180,11 +180,11 @@
     }
 
     function getFreiePlätze($con){
-        $connect = mysqli_query($con, "Select SitzplatzLabel FROM sitzplatz WHERE Belegt=false;");
-        if(!$connect){
+        $connect = mysqli_query($con, "Select SitzplatzLabel FROM sitzplatz WHERE Belegt=false ORDER BY left(SitzplatzLabel,1), length(SitzplatzLabel), SitzplatzLabel;");
+        if($connect){
             $rows = mysqli_fetch_all($connect, MYSQLI_ASSOC);
             foreach ($rows as $row){
-                return $row["Belegt"];
+                return $row["SitzplatzLabel"];
             }
         }else{
             return 0;

@@ -2,13 +2,7 @@
 function setReservierung(){
     let Kundenname = document.getElementById('setKundenname').value;
     let Sitz = document.getElementById('setSitz').value;
-    if(Sitz===""){
-        getNächstenFreienSitz().then((data) => {
-            setReservierungDB(Kundenname, data);
-        }).catch((e)=> {console.log(e)});
-    }else{
-        setReservierungDB(Kundenname, Sitz);
-    }
+    setReservierungDB(Kundenname, Sitz);
 }
 /**fügt die Rerservierung in der Datenbank hinzu */
 function setReservierungDB(Kundenname, Sitz){

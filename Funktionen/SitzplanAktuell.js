@@ -1,15 +1,57 @@
 const canvas = document.getElementById("bild");
-            const bild = canvas.getContext("2d");
-            const WIDTHBOX= 25; 
-            const HEIGHTBOX= 25; 
-            const TEXTOFFSET_WIDTH = 10;
-            const TEXTOFFSET_HEIGHT = 2;
+const bild = canvas.getContext("2d");
+const WIDTHBOX= 25; 
+const HEIGHTBOX= 25; 
+const TEXTOFFSET_WIDTH = 10;
+const TEXTOFFSET_HEIGHT = 2;
+const output = document.getElementById("setSitze");
+const speicher = document.getElementById("speicher");
+var Sitze = new Map()
+var Ausgewaehlt = []
+
+
+function getMousePos(canvas, event){
+    const rect = canvas.getBoundingClientRect()
+    return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+    }
+}
+
+canvas.addEventListener("mousedown",(e) => {
+    WähleSitzeAus(e);
+})
+
+function WähleSitzeAus(event){
+    const pos = getMousePos(canvas,event)
+    const sitz = getSitz(pos)
+    if(Ausgewaehlt.includes(sitz)){
+        Ausgewaehlt.splice(Ausgewaehlt.indexOf(sitz),1)
+    }else{
+        Ausgewaehlt.push(sitz);
+    }
+    result = "Ausgewählte Sitze:";
+    speicherort = speicher.value
+    Ausgewaehlt.forEach((value) => {
+        result = result+" "+value
+        speicher.value = speicherort +"/"+ value;
+    })
+    console.log(speicher.value)
+    output.innerHTML = result
+}
 
             function toCoX(Stelle){
                 return Stelle * WIDTHBOX;
             }
             function toCoY(Stelle){
                 return Stelle * HEIGHTBOX;
+            }
+
+            function fromCoX(posX){
+                return Math.floor(posX / WIDTHBOX);
+            }
+            function fromCoY(posY){
+                return Math.floor(posY / HEIGHTBOX);
             }
 
             function createRectangle(StelleX, StelleY, width, heigth, color){
@@ -37,10 +79,24 @@ const canvas = document.getElementById("bild");
                         bild.stroke()
                         bild.fillStyle = "black";
                         bild.fillText(text,toCoX(StelleX)+(WIDTHBOX*radius)/TEXTOFFSET_WIDTH,toCoY(StelleY)+(radius*HEIGHTBOX)/TEXTOFFSET_HEIGHT)
+                        Sitze.set(text,{x:StelleX,y:StelleY})
                     }).catch((error) => {console.log(error)})
                 }).catch((error) => {console.log(error)})
                 
             }
+
+function getSitz(pos){
+    let x = fromCoX(pos.x)
+    let y = fromCoY(pos.y)
+    let result = null
+    Sitze.forEach(function(values, key){
+        if(values.x==x && values.y==y){
+            result= key
+            return
+        }
+    });
+    return result;
+}
 
             async function createSitzreihe(StelleX, StelleY, SitzeProTisch, Tische, label, anfangsSitznummer, anfangsTischnummer){
                 for(let i=0;i<Tische;i++){

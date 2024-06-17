@@ -1,9 +1,12 @@
 /**fügt die Rerservierung hinzu (Variablen in den Feldern definiert) */
 function setReservierung(){
     let Kundenname = document.getElementById('setKundenname').value;
-    let Sitz = document.getElementById('setSitz').value;
     let Bezahlort = document.getElementById('wahl').value;
-    setReservierungDB(Kundenname, Sitz, Bezahlort);
+    let Sitze = document.getElementById('speicher').value.split("/");
+    Sitze.shift();
+    Sitze.forEach(Sitz => {
+        setReservierungDB(Kundenname, Sitz, Bezahlort);
+    });
 }
 /**fügt die Rerservierung in der Datenbank hinzu */
 function setReservierungDB(Kundenname, Sitz, Bezahlort){

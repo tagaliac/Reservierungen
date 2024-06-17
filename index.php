@@ -9,7 +9,7 @@
         <title>Reservierungen</title>
         <link rel="stylesheet" type="text/css" href="style.css">
         <script src=".\JQuery.js"></script>
-        <script type="text/JavaScript" src=".\Funktionen\SitzplanAuswahl.js"></script>
+        <!-- <script type="text/JavaScript" src=".\Funktionen\SitzplanAuswahl.js"></script>-->
         <script type="text/JavaScript" src=".\Funktionen\Reservierungsscript.js"></script>
         <?php 
             if($DEBUG_MODUS){
@@ -53,8 +53,7 @@
 				<td style="width:25%">
                     <label for="setKundenname">Name des Kunden:</label>
                     <input type="text" id="setKundenname"></br>
-                    <label for="setSitz">Sitzplatz:</label>
-                    <input type="text" id="setSitz"></br>
+                    <a id="setSitze"><a>
                     <button class="submit" onclick="setReservierung()">
                         Bestätige Reservierung
                     </button>
@@ -89,6 +88,9 @@
 				</td>
 			</tr>
 		</table>
+        <!--globale variablen-->
+        <p id="speicher" values=""></p>
+
         <!--Ausgabefeld-->
         <p id="output"></p>
         <canvas id="bild" width="2000px" height = "2000px">

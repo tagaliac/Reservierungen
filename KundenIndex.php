@@ -34,11 +34,12 @@
         </select><br>
         <label for="setKundenname">Name:</label>
         <input type="text" id="setKundenname"></br>
-        <label for="setSitz">Sitz:</label>
-        <input type="text" id="setSitz"></br>
+        <a id="setSitze"></a><br>
         <button class="submit" onclick="setReservierung()">
             Bestätige Reservierung
         </button>
+        <!--globale variablen-->
+        <p id="speicher" values=""></p>
 
         <!--Ausgabefeld-->
         <p id="output"></p>

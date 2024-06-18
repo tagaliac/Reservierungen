@@ -37,8 +37,16 @@
                     $inhalt = $_POST['Inhalt'];
                     echo deleteReservierung($inhalt,$con);
                     break;
+                case "Bezahlung":
+                    echo setBezahlung($_POST["Kundenname"],$_POST['Inhalt'],$con);
+                    break;
                 default:
-                    echo "keine Aktion ausgewählt\n";
+                    $connect = mysqli_query($con, $action);
+                    if(!$connect){
+                        throw "Befehl könnte nicht verarbeitet werden";
+                    }else{
+                        echo mysqli_fetch_array($connect)[0];
+                    }
             }
         }
     }
@@ -107,7 +115,7 @@
         switch ($auswahl){
             case "Name":
                 $connect = mysqli_query($con, "select kunde.Kundenname as Kundennamen, sitzplatz.SitzplatzLabel as Sitzplatz,
-                                            reservierung.ReservierungsID, kunde.Bezahlort from reservierung
+                                            reservierung.ReservierungsID, kunde.Bezahlort, kunde.Gezahlt from reservierung
                                             join kunde on reservierung.KundenID = kunde.KundenID
                                             join sitzplatz on reservierung.SitzplatzLabel = sitzplatz.SitzplatzLabel
                                             WHERE kunde.Kundenname='$inhalt';");
@@ -119,7 +127,7 @@
                 break;
             case "Sitz":
                 $connect = mysqli_query($con, "select kunde.Kundenname as Kundennamen, sitzplatz.SitzplatzLabel as Sitzplatz,
-                                            reservierung.ReservierungsID, kunde.Bezahlort from reservierung
+                                            reservierung.ReservierungsID, kunde.Bezahlort, kunde.Gezahlt from reservierung
                                             join kunde on reservierung.KundenID = kunde.KundenID
                                             join sitzplatz on reservierung.SitzplatzLabel = sitzplatz.SitzplatzLabel
                                             WHERE sitzplatz.SitzplatzLabel='$inhalt';");
@@ -131,7 +139,7 @@
                 break;
             default:
                 $connect = mysqli_query($con, "select kunde.Kundenname as Kundennamen, sitzplatz.SitzplatzLabel as Sitzplatz,
-                                        reservierung.ReservierungsID, kunde.Bezahlort from reservierung
+                                        reservierung.ReservierungsID, kunde.Bezahlort, kunde.Gezahlt from reservierung
                                         join kunde on reservierung.KundenID = kunde.KundenID
                                         join sitzplatz on reservierung.SitzplatzLabel = sitzplatz.SitzplatzLabel
                                         WHERE reservierung.ReservierungsLabel='$inhalt';");
@@ -154,9 +162,10 @@
             $name = $row["Kundennamen"];
             $Reservierung = $row["ReservierungsID"];
             $Bezahlort = $row["Bezahlort"];
+            $gezahlt = $row["Gezahlt"]?"Ja":"Nein";
             break;
         }
-        return "Kunde: " . $name . "| Sitzplatz: " . $result . "| ReservierungsID: " . $Reservierung . "| Bezahlort: " . $Bezahlort . "\n";
+        return "Kunde: " . $name . "| Sitzplatz: " . $result . "| ReservierungsID: " . $Reservierung . "| Bezahlort: " . $Bezahlort . "| Gezahlt: " . $gezahlt . "\n";
     }
 
     /**erhalte den Sitzplatz mit der ReservierungsID */
@@ -212,6 +221,19 @@
             echo "Belegt kann nicht überprüft werden";
         }else{
             return mysqli_fetch_array($connect)[0]==1? true : false;
+        }
+    }
+
+    function setBezahlung($Kunde,$value,$con){
+        if(getKundenID($Kunde,$con)==0){
+            return "Kundenname könnte nicht gefunden werden";
+        }
+
+        $connect = mysqli_query($con, "UPDATE kunde SET Gezahlt = $value WHERE Kundenname = '$Kunde';");
+        if(!$connect){
+            echo "Belegt kann nicht überprüft werden";
+        }else{
+            return "Bezahlung wurde geupdated";
         }
     }
 ?>

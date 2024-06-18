@@ -4,8 +4,9 @@ const WIDTHBOX= 25;
 const HEIGHTBOX= 25; 
 const TEXTOFFSET_WIDTH = 10;
 const TEXTOFFSET_HEIGHT = 2;
-const output = document.getElementById("setSitze");
+const sitzeAuswahl= document.getElementById("setSitze");
 const speicher = document.getElementById("speicher");
+const output = document.getElementById("output");
 var Sitze = new Map()
 var Ausgewaehlt = []
 
@@ -25,19 +26,22 @@ canvas.addEventListener("mousedown",(e) => {
 function WähleSitzeAus(event){
     const pos = getMousePos(canvas,event)
     const sitz = getSitz(pos)
-    if(Ausgewaehlt.includes(sitz)){
-        Ausgewaehlt.splice(Ausgewaehlt.indexOf(sitz),1)
-    }else{
-        Ausgewaehlt.push(sitz);
-    }
-    result = "Ausgewählte Sitze:";
-    speicherort = speicher.value
-    Ausgewaehlt.forEach((value) => {
-        result = result+" "+value
-        speicher.value = speicherort +"/"+ value;
-    })
-    console.log(speicher.value)
-    output.innerHTML = result
+    interactDatabase("SELECT belegt FROM sitzplatz WHERE SitzplatzLabel = '"+sitz+"';").then(data => {
+        if(data==1){throw "schon belegt"}
+        if(Ausgewaehlt.includes(sitz)){
+            Ausgewaehlt.splice(Ausgewaehlt.indexOf(sitz),1)
+        }else{
+            Ausgewaehlt.push(sitz);
+        }
+        result = "Ausgewählte Sitze:";
+        speicherort = speicher.value
+        Ausgewaehlt.forEach((value) => {
+            result = result+" "+value
+            speicher.value = speicherort +"/"+ value;
+        })
+        sitzeAuswahl.innerHTML = result
+        output.innerHTML = "-";
+    }).catch(e => {output.innerHTML=e})
 }
 
             function toCoX(Stelle){

@@ -82,3 +82,18 @@ function deleteReservierung(){
         }
     });
 }
+
+function setBezahlung(Kundenname, value){
+    $.ajax({
+        url: "Funktionen/MachReservierung.php",
+        type: "POST",
+        data: {Action:"Bezahlung",Kundenname:Kundenname, Inhalt:(value==="ja")},
+        success: function(data){
+            console.log("->", data);
+            document.getElementById('output').innerHTML=data;
+        },
+        error: function(data){
+            console.error("error", data);
+        }
+    });
+}

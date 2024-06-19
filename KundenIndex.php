@@ -25,16 +25,18 @@
     <body onload="displaySitze(<?php echo $DEBUG_MODUS?>)">
         <!-- übersicht der Sitzplätze-->
         <h1>Reservierungen</h1>
-
+        
+        <label for="setKundenname">Geben Sie Ihren Namen an:</label>
+        <input type="text" id="setKundenname"></br>
+        <label for="email">Geben Sie Ihre Email-Adresse an:</label>
+        <input type="text" id="email"></br>
         <label for="wahl">Wählen Sie Abholort aus:</label>
         <select name="Auswahl" id="wahl">
             <option value="Cannstatt">Mellyriton Bad Cannstatt</option>
             <option value="Waiblingen">Boulevard Café Bar Waiblingen</option>
             <option value="Filderstadt">Hotel Sielminger Hof, Filderstadt</option>
         </select><br>
-        <label for="setKundenname">Name:</label>
-        <input type="text" id="setKundenname"></br>
-        <a id="setSitze"></a><br>
+        <a id="setSitze">Wählen Sie Ihre Sitze aus. Wenn kein Sitz gewählt </a><br>
         <button class="submit" onclick="setReservierung()">
             Bestätige Reservierung
         </button>

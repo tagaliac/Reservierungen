@@ -6,7 +6,8 @@ create table kunde(
     KundenID int PRIMARY KEY AUTO_INCREMENT,
     Kundenname varchar(127) NOT NULL,
     Gezahlt boolean DEFAULT 0,
-    Bezahlort varchar(31)
+    Bezahlort varchar(31),
+    Email varchar(127)
 );
 
 create table sitzplatz(

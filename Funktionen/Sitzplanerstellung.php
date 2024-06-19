@@ -53,7 +53,7 @@
                         $counter = mysqli_fetch_array($connect)[0];
                         if($counter<($Sitzreihen*$Länge)){
                             while($counter<($Sitzreihen*$Länge)){
-                                $counter=$counter+1;
+                                $counter+=1;
                                 addSitzplatz($counter);
                             }
                         }else{
@@ -113,7 +113,7 @@
         $result = "";
         $rows = mysqli_fetch_all($data, MYSQLI_ASSOC);
         foreach ($rows as $row){
-            $result = $result . $row["Belegt"] . "|";
+            $result .= $row["Belegt"] . "|";
         }
         return $result;
     }

@@ -23,19 +23,19 @@
                     $Sitz = htmlspecialchars($_POST['Sitz']);
                     $Kundennamen = htmlspecialchars($_POST['Kundenname']);
                     $Bezahlort = htmlspecialchars($_POST['Bezahlort']);
-                    setReservierung($Kundennamen,$Sitz,$Bezahlort,$con);
+                    $Email = htmlspecialchars($_POST['Email']);
+                    setReservierung($Kundennamen,$Sitz,$Bezahlort,$Email,$con);
                     break;
                 case "get":
                     $auswahl = $_POST['Auswahl'];
-                    $inhalt = $_POST['Inhalt'];
+                    $inhalt = htmlspecialchars($_POST['Inhalt']);
                     echo getReservierung($auswahl,$inhalt,$con);
                     break;
                 case "getFreienSitz":
                     return getFreiePlätze($con);
                     break;
                 case "delete":
-                    $inhalt = $_POST['Inhalt'];
-                    echo deleteReservierung($inhalt,$con);
+                    echo deleteReservierung($_POST['Inhalt'],$con);
                     break;
                 case "Bezahlung":
                     echo setBezahlung($_POST["Kundenname"],$_POST['Inhalt'],$con);
@@ -54,7 +54,7 @@
     /**fügt einen Reservierungseintrag hinzu.
      * Wenn der Kunde nicht existiert wird dieser auch erstellt.
      */
-    function setReservierung($Kundennamen, $Sitz, $Bezahlort, $con){
+    function setReservierung($Kundennamen, $Sitz, $Bezahlort,$Email, $con){
         /**Vorbedienungen */
         if($Kundennamen==null){
             echo "Kundenname fehlt\n";
@@ -74,7 +74,7 @@
 
         /**Kunden finden */
         if(getKundenID($Kundennamen,$con)==0){
-            fügeKundenHinzu($Kundennamen,$Bezahlort,$con);
+            fügeKundenHinzu($Kundennamen,$Bezahlort,$Email,$con);
         }
         $Kunde = getKundenID($Kundennamen,$con);
         
@@ -90,8 +90,8 @@
     }
 
     /**fügt Kundeneintrag hinzu */
-    function fügeKundenHinzu($Kundennamen,$Bezahlort,$con){
-        $connect = mysqli_query($con, "INSERT INTO kunde(Kundenname,Bezahlort) VALUES ('$Kundennamen','$Bezahlort');");
+    function fügeKundenHinzu($Kundennamen,$Bezahlort,$Email,$con){
+        $connect = mysqli_query($con, "INSERT INTO kunde(Kundenname,Bezahlort,Email) VALUES ('$Kundennamen','$Bezahlort','$Email');");
         if(!$connect){
             echo "Kundenname könnte nicht eingetragen werden\n";
         }else{
@@ -156,7 +156,7 @@
         $result='';
         $rows = mysqli_fetch_all($connect, MYSQLI_ASSOC);
         foreach ($rows as $row){
-            $result = $result . $row["Sitzplatz"] . ";";
+            $result .= $row["Sitzplatz"] . ";";
         }
         foreach($rows as $row){
             $name = $row["Kundennamen"];
@@ -220,7 +220,7 @@
         if(!$connect){
             echo "Belegt kann nicht überprüft werden";
         }else{
-            return mysqli_fetch_array($connect)[0]==1? true : false;
+            return (mysqli_fetch_array($connect)[0]==1);
         }
     }
 
@@ -231,7 +231,7 @@
 
         $connect = mysqli_query($con, "UPDATE kunde SET Gezahlt = $value WHERE Kundenname = '$Kunde';");
         if(!$connect){
-            echo "Belegt kann nicht überprüft werden";
+            echo "Bazahlung kann nicht geupdated werden";
         }else{
             return "Bezahlung wurde geupdated";
         }

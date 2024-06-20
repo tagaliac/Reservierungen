@@ -72,7 +72,7 @@
                 <td style="width:25%">
                     <label for="bezahltKundenname">Name des Kunden:</label>
                     <input class="input" type="text" id="bezahltKundenname"></br>
-                    <label for="bezahlt">Wählen Sie Abholort aus:</label>
+                    <label for="bezahlt">Ist schon Bezahlt:</label>
                     <select class="Auswahl" name="Auswahl" id="bezahlt">
                         <option value="ja">Ja</option>
                         <option value="nein">Nein</option>

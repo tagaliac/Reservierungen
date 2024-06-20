@@ -13,9 +13,9 @@ require './PHPMailer-master/src/PHPMailer.php';
 require './PHPMailer-master/src/SMTP.php';
 
 //Konstanten
-$user = "Achilleas Tagalidis";
-$useradress = "achilleas.tagalidis@gmail.com";
-$password = '2486511ora5357';
+$user = "";
+$useradress = "";
+$password = '';
 
 
 //Create an instance; passing `true` enables exceptions

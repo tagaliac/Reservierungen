@@ -2,23 +2,30 @@
 const URL = "Funktionen/MachReservierung.php";
 
 /**fügt die Rerservierung hinzu (Variablen in den Feldern definiert) */
-function setReservierung(){
+async function setReservierung(){
     let Kundenname = document.getElementById('setKundenname').value;
     let Bezahlort = document.getElementById('wahl').value;
-    let Sitze = document.getElementById('speicher').value.split("/");
+    let Sitze = [];
     let Email = document.getElementById('email').value;
-    Sitze.shift();
-    Sitze.forEach(Sitz => {
-        setReservierungDB(Kundenname, Sitz, Bezahlort, Email).then(data=>{
+    try{
+        Sitze = document.getElementById('speicher').value.split("/");
+        Sitze.shift();
+    }catch(e){
+        await getNächstenFreienSitz().then(data =>{
+            Sitze.push(data)
+        })
+    }
+    for(let i=0;i<Sitze.length;i++){
+        await setReservierungDB(Kundenname, Sitze[i], Bezahlort, Email).then(data=>{
             sendMail(Email,Kundenname).then(data1 =>{
-                document.getElementById('output').innerHTML=data+" "+data1;
+                document.getElementById('output').innerHTML=data+". "+data1;
             }).catch(e => {
-                makeCommand("SELECT ReservierungsID FROM reservierung WHERE SitzplatzLabel='"+Sitz+"';").then(data=>{
+                makeCommand("SELECT ReservierungsID FROM reservierung WHERE SitzplatzLabel='"+Sitze[i]+"';").then(data=>{
                     deleteReservierung(data);
                 }).finally(()=>{document.getElementById('output').innerHTML=e;})
             })
         }).catch(e => document.getElementById('output').innerHTML=e);
-    });
+    }
 }
 /**fügt die Rerservierung in der Datenbank hinzu */
 function setReservierungDB(Kundenname, Sitz, Bezahlort, Email){
@@ -61,6 +68,7 @@ function getReservierungDB(Auswahl, Inhalt){
     });
 }
 
+/**gibt den nächsten Freien Sitzplatz zurück */
 function getNächstenFreienSitz(){
     return new Promise((resolve,reject) =>{
         $.ajax({
@@ -102,6 +110,7 @@ function deleteReservierung(ReservierungsID){
     });
 }
 
+/**Setzt die Bezahlung fest */
 function setBezahlung(Kundenname, value){
     $.ajax({
         url: URL,
@@ -117,6 +126,7 @@ function setBezahlung(Kundenname, value){
     });
 }
 
+/**Sendet eine Email; Work in Progress */
 function sendMail(Kundenadresse,Kundenname){
     return new Promise((resolve,reject) => {
         /*da Email noch nicht implementiert*/
@@ -128,7 +138,11 @@ function sendMail(Kundenadresse,Kundenname){
             data: {Kundenadresse:Kundenadresse,Kundenname:Kundenname},
             success: function(data){
                 console.log("->", data);
-                resolve(data)
+                if(data==="Message has been sent"){
+                    resolve(data)
+                }else{
+                    reject(data)
+                }
             },
             error: function(data){
                 reject(data)
@@ -138,6 +152,7 @@ function sendMail(Kundenadresse,Kundenname){
     })
 }
 
+/**interagiert mit der Datenbank direkt. "command" muss als SQL-Code angegeben sein */
 function makeCommand(command){
     return new Promise((resolve, reject)=>{
         $.ajax({

@@ -32,7 +32,7 @@
                     echo getReservierung($auswahl,$inhalt,$con);
                     break;
                 case "getFreienSitz":
-                    return getFreiePlätze($con);
+                    echo getFreiePlätze($con);
                     break;
                 case "delete":
                     echo deleteReservierung($_POST['Inhalt'],$con);
@@ -142,7 +142,7 @@
                                         reservierung.ReservierungsID, kunde.Bezahlort, kunde.Gezahlt from reservierung
                                         join kunde on reservierung.KundenID = kunde.KundenID
                                         join sitzplatz on reservierung.SitzplatzLabel = sitzplatz.SitzplatzLabel
-                                        WHERE reservierung.ReservierungsLabel='$inhalt';");
+                                        WHERE reservierung.ReservierungsID='$inhalt';");
                 if(!$connect){
                     return "Daten könnten nicht geladen werden\n";
                 }else{
@@ -153,19 +153,23 @@
     /**verarbeitet die gesuchten Reservierungsdaten in einem Text 
     */
     function getStringFromReservierungsdaten($connect){
-        $result='';
+        $Sitzplatz='';
+        $Reservierung='';
         $rows = mysqli_fetch_all($connect, MYSQLI_ASSOC);
+        if(count($rows)==0){
+            return "Kein Eintrag gefunden";
+        }
         foreach ($rows as $row){
-            $result .= $row["Sitzplatz"] . ";";
+            $Sitzplatz .= $row["Sitzplatz"] . ";";
+            $Reservierung .= $row["ReservierungsID"] . ";";
         }
         foreach($rows as $row){
             $name = $row["Kundennamen"];
-            $Reservierung = $row["ReservierungsID"];
             $Bezahlort = $row["Bezahlort"];
             $gezahlt = $row["Gezahlt"]?"Ja":"Nein";
             break;
         }
-        return "Kunde: " . $name . "| Sitzplatz: " . $result . "| ReservierungsID: " . $Reservierung . "| Bezahlort: " . $Bezahlort . "| Gezahlt: " . $gezahlt . "\n";
+        return "Kunde: " . $name . "| Sitzplatz: " . $Sitzplatz . "| ReservierungsID: " . $Reservierung . "| Bezahlort: " . $Bezahlort . "| Gezahlt: " . $gezahlt . "\n";
     }
 
     /**erhalte den Sitzplatz mit der ReservierungsID */
@@ -203,6 +207,7 @@
         }
     }
 
+    /**gibt den nächsten Freien Sitzplatz zurück */
     function getFreiePlätze($con){
         $connect = mysqli_query($con, "Select SitzplatzLabel FROM sitzplatz WHERE Belegt=false ORDER BY left(SitzplatzLabel,1), length(SitzplatzLabel), SitzplatzLabel;");
         if($connect){
@@ -215,6 +220,7 @@
         }
     }
 
+    /**Überprüft ob der Sitz belegt ist */
     function isBelegt($Sitz,$con){
         $connect = mysqli_query($con, "Select Belegt FROM sitzplatz WHERE SitzplatzLabel='$Sitz';");
         if(!$connect){
@@ -224,6 +230,7 @@
         }
     }
 
+    /**Setzt den Bazahlwert bei Kunden */
     function setBezahlung($Kunde,$value,$con){
         if(getKundenID($Kunde,$con)==0){
             return "Kundenname könnte nicht gefunden werden";

@@ -18,7 +18,7 @@ create table sitzplatz(
 CREATE TABLE reservierung(
     ReservierungsID int PRIMARY KEY AUTO_INCREMENT,
     KundenID int NOT NULL,
-    SitzplatzLabel varchar(31) NOT NULL,
+    SitzplatzLabel varchar(31) NOT NULL UNIQUE,
     FOREIGN KEY (KundenID) REFERENCES kunde(KundenID),
     FOREIGN KEY (SitzplatzLabel) REFERENCES sitzplatz(SitzplatzLabel)
 );

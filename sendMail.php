@@ -13,8 +13,9 @@ require './PHPMailer-master/src/PHPMailer.php';
 require './PHPMailer-master/src/SMTP.php';
 
 //Konstanten
-$user = "";
-$password = '';
+$user = "Achilleas Tagalidis";
+$useradress = "achilleas.tagalidis@gmail.com";
+$password = '2486511ora5357';
 
 
 //Create an instance; passing `true` enables exceptions
@@ -32,7 +33,7 @@ try {
     $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
 
     //Recipients
-    $mail->setFrom($user, 'Mailer');
+    $mail->setFrom($useradress, $user);
     $mail->addAddress($_POST['Kundenadresse'], $_POST['Kundenname']);     
 
     //Content

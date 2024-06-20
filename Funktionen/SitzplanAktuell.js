@@ -18,7 +18,7 @@ const NICHT_BELEGTFARBE = "green";
 const TEXTFARBE = "black";
 const RANDFARBE = "black";
 
-
+/**gibt die Mausposition im Canvas zurück */
 function getMousePos(canvas, event){
     const rect = canvas.getBoundingClientRect()
     return {
@@ -27,28 +27,32 @@ function getMousePos(canvas, event){
     }
 }
 
+/**Wenn Maus gedrückt wird */
 canvas.addEventListener("mousedown",(e) => {
     WähleSitzeAus(e);
 })
 
+/**Wählt sitzt aus und legt es in der Schlange */
 function WähleSitzeAus(event){
     const sitz = getSitz(getMousePos(canvas,event))
-    interactDatabase("SELECT belegt FROM sitzplatz WHERE SitzplatzLabel = '"+sitz+"';").then(data => {
-        if(data==1){throw "schon belegt"}
-        if(Ausgewaehlt.includes(sitz)){
-            Ausgewaehlt.splice(Ausgewaehlt.indexOf(sitz),1)
-        }else{
-            Ausgewaehlt.push(sitz);
-        }
-        result = "Ausgewählte Sitze:";
-        speicherort = speicher.value
-        Ausgewaehlt.forEach((value) => {
-            result = result+" "+value
-            speicher.value = speicherort +"/"+ value;
-        })
-        sitzeAuswahl.innerHTML = result
-        output.innerHTML = "-";
-    }).catch(e => {output.innerHTML=e})
+    if(sitz!=null){
+        interactDatabase("SELECT belegt FROM sitzplatz WHERE SitzplatzLabel = '"+sitz+"';").then(data => {
+            if(data==1){throw "schon belegt"}
+            if(Ausgewaehlt.includes(sitz)){
+                Ausgewaehlt.splice(Ausgewaehlt.indexOf(sitz),1)
+            }else{
+                Ausgewaehlt.push(sitz);
+            }
+            result = "Ausgewählte Sitze:";
+            speicherort = speicher.value
+            Ausgewaehlt.forEach((value) => {
+                result = result+" "+value
+                speicher.value = speicherort +"/"+ value;
+            })
+            sitzeAuswahl.innerHTML = result
+            output.innerHTML = "";
+        }).catch(e => {output.innerHTML=e})
+    } 
 }
 
 

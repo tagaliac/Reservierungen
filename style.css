@@ -1,15 +1,39 @@
-.greenRectangle{
-    position: relative;
-    fill:rgb(0, 255, 0);
-    stroke:black;
+* {
+    font-family: "Times New Roman", Times, serif;
+    text-decoration: none;
+    background-color: rgba(50,50,50,1);
+    font-style: normal;
+    color: yellow;
 }
-.redRectangle{
-    position: relative;
-    fill:red;
-    stroke:black;
+.header{
+    text-underline-position: auto;
 }
-.emptyRectangle{
-    position: relative;
-    fill:rgba(255, 255, 255, 0);
-    stroke:rgb(255, 255, 255, 0);
+.submit{
+    border-color: white;
+    background-color: rgba(233, 233, 233, 0.418);
+    font-size: auto;
+    color: yellow;
+    text-align: center;
 }
+.submit:hover{
+    color: #00d9ff;
+}
+
+.Auswahl{
+    border-color: white;
+    background-color: rgba(233, 233, 233, 0.418);
+    font-size: auto;
+    color: yellow;
+    text-align: center;
+}
+.Auswahl:hover{
+    color: #00d9ff;
+}
+.input{
+    border-color: white;
+    background-color: white;
+    font-size: auto;
+    color: black;
+    text-align: center;
+}
+

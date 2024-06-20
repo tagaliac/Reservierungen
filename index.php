@@ -23,23 +23,23 @@
     <body>
 
         <!-- übersicht der Sitzplätze-->
-        <h1>Reservierungen</h1>
+        <h1 class="header" align="center">Reservierungen</h1>
 
-        <table style="width:80%">
+        <table style="width:100%">
 			<tr align="center">
 				<td style="width:25%">Füge Reservierung hinzu</td>
 				<td style="width:25%">Schau Reservierungen</td>
 				<td style="width:25%">Lösche Reservierung</td>
                 <td style="width:25%">Ist schon bezahlt</td>
 			</tr>
-			<tr style="font-family: cursive; vertical-align:top" align="center">
+			<tr align="center">
 				<td style="width:25%">
                     <label for="setKundenname">Name des Kunden:</label>
-                    <input type="text" id="setKundenname"></br>
+                    <input class="input" type="text" id="setKundenname"></br>
                     <label for="email">Email:</label>
-                    <input type="text" id="email"></br>
+                    <input class="input" type="text" id="email"></br>
                     <label for="wahl">Wählen Sie Abholort aus:</label>
-                    <select name="Auswahl" id="wahl">
+                    <select class="Auswahl" name="Auswahl" id="wahl">
                         <option value="Cannstatt">Mellyriton Bad Cannstatt</option>
                         <option value="Waiblingen">Boulevard Café Bar Waiblingen</option>
                         <option value="Filderstadt">Hotel Sielminger Hof, Filderstadt</option>
@@ -51,32 +51,32 @@
 				</td>
 				<td style="width:25%">
                     <label for="wahl">Wähle Suchoption:</label>
-                    <select name="Auswahl" id="suchOption">
+                    <select class="Auswahl" name="Auswahl" id="suchOption">
                         <option value="Name">Name des Kunden</option>
                         <option value="Sitz">Sitzplatz</option>
                         <option value="Reservierung">ReservierungsID</option>
                     </select>
                     <label for="inhalt">Inhalt:</label>
-                    <input type="text" id="inhalt"></br>
+                    <input class="input" type="text" id="inhalt"></br>
                     <button class="submit" onclick="getReservierung()">
                         Suche
                     </button>
 				</td>
                 <td style="width:25%">
                     <label for="delete">Lösche Reservierung mit ID:</label>
-                    <input type="number" id="delete"></br>
+                    <input class="input" type="number" id="delete"></br>
                     <button class="submit" onclick="deleteReservierung(document.getElementById('delete').value)">
                         Lösche Reservierung
                     </button>
 				</td>
                 <td style="width:25%">
                     <label for="bezahltKundenname">Name des Kunden:</label>
-                    <input type="text" id="bezahltKundenname"></br>
+                    <input class="input" type="text" id="bezahltKundenname"></br>
                     <label for="bezahlt">Wählen Sie Abholort aus:</label>
-                    <select name="Auswahl" id="bezahlt">
+                    <select class="Auswahl" name="Auswahl" id="bezahlt">
                         <option value="ja">Ja</option>
                         <option value="nein">Nein</option>
-                    </select>
+                    </select><br>
                     <button class="submit" onclick="setBezahlung(document.getElementById('bezahltKundenname').value,document.getElementById('bezahlt').value)">
                         Setzt Bezahlung
                     </button>
@@ -87,10 +87,17 @@
         <p id="speicher" values=""></p>
 
         <!--Ausgabefeld-->
-        <p id="output"></p>
+        <p id="output" style="width:100%" align="center"></p>
         <canvas id="bild" width="2000px" height = "2000px">
 
         </canvas>
+
+        <footer>
+            <hr class="horizontal line">
+            <div align="center">
+                <p s>Σύλλογος Ρομανία</p>
+            </div>
+        </footer>
     </body>
     <script type="text/JavaScript" src="./Funktionen/SitzplanAktuell.js"></script>
 </html>

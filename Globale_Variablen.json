@@ -2,5 +2,6 @@
     "DEBUG_MODUS": false,
     "Sitzreihen": 6,
     "SitzeProReihe": 10,
-    "SitzeProTisch": 4
+    "SitzeProTisch": 4,
+    "Sprache":"Griechisch"
 }

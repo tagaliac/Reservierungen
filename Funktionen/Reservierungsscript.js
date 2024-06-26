@@ -6,14 +6,27 @@ async function setReservierung(){
     let Kundenname = document.getElementById('setKundenname').value;
     let Bezahlort = document.getElementById('wahl').value;
     let Sitze = [];
+    if(!bestaetigeEmail('email','BestatigeEmail')){
+        document.getElementById('output').innerHTML="Emaileinträge stimmen nicht überein";
+        return;
+    }
     let Email = document.getElementById('email').value;
+    let AnzahlAutoSitze = 1;
+    try{
+        AnzahlAutoSitze = document.getElementById('anzahlSitze').value;
+    }catch(error){
+        AnzahlAutoSitze = 1;
+    }
     try{
         Sitze = document.getElementById('speicher').value.split("/");
         Sitze.shift();
     }catch(e){
-        await getNächstenFreienSitz().then(data =>{
-            Sitze.push(data)
-        })
+        console.log(AnzahlAutoSitze);
+        await getNächsteFreieSitze(AnzahlAutoSitze).then(data => {
+            Sitze = data;
+        }).catch(error => {
+            document.getElementById('output').innerHTML=error;
+        });
     }
     for(let i=0;i<Sitze.length;i++){
         await setReservierungDB(Kundenname, Sitze[i], Bezahlort, Email).then(data=>{
@@ -68,19 +81,19 @@ function getReservierungDB(Auswahl, Inhalt){
     });
 }
 
-/**gibt den nächsten Freien Sitzplatz zurück */
-function getNächstenFreienSitz(){
+/**gibt die nächsten Freien Sitzplätze zurück */
+function getNächsteFreieSitze(anzahl){
     return new Promise((resolve,reject) =>{
         $.ajax({
             url: URL,
             type: "POST",
-            data: {Action:"getFreienSitz"},
+            data: {Action:"getFreienSitz",anzahl:anzahl},
             success: function(data){
                 if(data!=0){
-                    resolve(data)
+                    resolve(data.split("|"))
                 }else{
                     console.log(data)
-                    reject("kein Sitzplatz mehr vorhanden")
+                    reject("Sitzplätze nicht mehr vorhanden")
                 }
             },
             error: function(data){
@@ -124,6 +137,11 @@ function setBezahlung(Kundenname, value){
             console.error("error", data);
         }
     });
+}
+
+/**Bestätigt die Email mit den Angegeben IDs der HTML Objekte */
+function bestaetigeEmail(IdOfFirstHTML,IdOfSecondHTML){
+    return document.getElementById(IdOfFirstHTML).value===document.getElementById(IdOfSecondHTML).value;
 }
 
 /**Sendet eine Email; Work in Progress */

@@ -3,6 +3,7 @@
         <meta charset="UTF-8">
         <title>Reservierungen</title>
         <link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="icon" type="image/png" href="img/Pontos_pouli.png">
         <script src=".\JQuery.js"></script>
         <!-- <script type="text/JavaScript" src=".\Funktionen\SitzplanAuswahl.js"></script>-->
         <script type="text/JavaScript" src=".\Funktionen\Reservierungsscript.js"></script>
@@ -44,6 +45,8 @@
                         <option value="Waiblingen">Boulevard Café Bar Waiblingen</option>
                         <option value="Filderstadt">Hotel Sielminger Hof, Filderstadt</option>
                     </select><br>
+                    <label for="anzahlSitze">Sitze automatisch gewählt?:</label>
+                    <input class="input" type="number" id="anzahlSitze" value="1" min="1"></br></br>
                     <a id="setSitze"><a>
                     <button class="submit" onclick="setReservierung()">
                         Bestätige Reservierung

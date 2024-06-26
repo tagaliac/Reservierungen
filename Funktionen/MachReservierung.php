@@ -32,7 +32,8 @@
                     echo getReservierung($auswahl,$inhalt,$con);
                     break;
                 case "getFreienSitz":
-                    echo getFreiePlätze($con);
+                    $anzahl = $_POST['anzahl'];
+                    echo getFreiePlätze($con,$anzahl);
                     break;
                 case "delete":
                     echo deleteReservierung($_POST['Inhalt'],$con);
@@ -208,16 +209,22 @@
     }
 
     /**gibt den nächsten Freien Sitzplatz zurück */
-    function getFreiePlätze($con){
-        $connect = mysqli_query($con, "Select SitzplatzLabel FROM sitzplatz WHERE Belegt=false ORDER BY left(SitzplatzLabel,1), length(SitzplatzLabel), SitzplatzLabel;");
+    function getFreiePlätze($con,$anzahl){
+        $connect = mysqli_query($con, "Select SitzplatzLabel FROM sitzplatz WHERE Belegt=false ORDER BY left(SitzplatzLabel,1), length(SitzplatzLabel), SitzplatzLabel LIMIT $anzahl;");
+        $result = "";
         if($connect){
             $rows = mysqli_fetch_all($connect, MYSQLI_ASSOC);
             foreach ($rows as $row){
-                return $row["SitzplatzLabel"];
+                if($result===""){
+                    $result .= $row["SitzplatzLabel"];
+                }else{
+                    $result .= "|" . $row["SitzplatzLabel"];
+                }
             }
         }else{
             return 0;
         }
+        return $result;
     }
 
     /**Überprüft ob der Sitz belegt ist */

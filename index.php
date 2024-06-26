@@ -39,6 +39,8 @@
                     <input class="input" type="text" id="setKundenname"></br>
                     <label for="email">Email:</label>
                     <input class="input" type="text" id="email"></br>
+                    <label for="BestatigeEmail">Email bestätigen:</label>
+                    <input class="input" type="text" id="BestatigeEmail"></br>
                     <label for="wahl">Wählen Sie Abholort aus:</label>
                     <select class="Auswahl" name="Auswahl" id="wahl">
                         <option value="Cannstatt">Mellyriton Bad Cannstatt</option>
@@ -68,7 +70,7 @@
                 <td style="width:25%">
                     <label for="delete">Lösche Reservierung mit ID:</label>
                     <input class="input" type="number" id="delete"></br>
-                    <button class="submit" onclick="deleteReservierung(document.getElementById('delete').value)">
+                    <button class="submit" onclick="deleteReservierung(document.getElementById('delete').value,true)">
                         Lösche Reservierung
                     </button>
 				</td>

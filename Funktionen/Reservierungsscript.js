@@ -1,5 +1,9 @@
 /**Konstanten */
 const URL = "Funktionen/MachReservierung.php";
+const VEREINS_EMAIL = ""; //hier gehört Email vom Verein
+const KUNDEN_NACHRICHT = "test"; //hier gehört Nachricht an den Kunden
+const VEREINS_NAME = "Romania"; //hier gehört Name vom Emailaccount vom Verein
+const VEREINS_NACHRICHT = "bestätigt"; //hier gehört Nachricht in der Bestätigungsemail vom Verein
 
 /**fügt die Rerservierung hinzu (Variablen in den Feldern definiert) */
 async function setReservierung(){
@@ -34,11 +38,12 @@ async function setReservierung(){
     }
     for(let i=0;i<Sitze.length;i++){
         await setReservierungDB(Kundenname, Sitze[i], Bezahlort, Email).then(data=>{
-            sendMail(Email,Kundenname).then(data1 =>{
+            sendMail(Email,Kundenname,KUNDEN_NACHRICHT).then(data1 =>{
                 document.getElementById('output').innerHTML=data+". "+data1;
+                sendMail(VEREINS_EMAIL, VEREINS_NAME, VEREINS_NACHRICHT)
             }).catch(e => {
                 makeCommand("SELECT ReservierungsID FROM reservierung WHERE SitzplatzLabel='"+Sitze[i]+"';").then(data=>{
-                    deleteReservierung(data);
+                    deleteReservierung(data,false);
                 }).finally(()=>{document.getElementById('output').innerHTML=e;})
             })
         }).catch(e => document.getElementById('output').innerHTML=e);
@@ -108,8 +113,8 @@ function getNächsteFreieSitze(anzahl){
 }
 
 /**löscht die Reservierung (Variablen in den Feldern definiert) */
-function deleteReservierung(ReservierungsID){
-    if(!confirm("Eintrag sicher löschen?")){
+function deleteReservierung(ReservierungsID, bestaetigung){
+    if(bestaetigung&&!confirm("Eintrag sicher löschen?")){
         document.getElementById('output').innerHTML="nicht gelöscht";
         return;
     }
@@ -157,15 +162,15 @@ function bestaetigeEmail(IdOfFirstHTML,IdOfSecondHTML){
 }
 
 /**Sendet eine Email; Work in Progress */
-function sendMail(Kundenadresse,Kundenname){
+function sendMail(Empfangsadresse,Empfangsname,message){
     return new Promise((resolve,reject) => {
         /*da Email noch nicht implementiert*/
-        resolve("email noch nicht gesendet, weil work in Progress")
+        //resolve("email noch nicht gesendet, weil work in Progress")
 
-        /*$.ajax({
+        $.ajax({
             url: "sendMail.php",
             type: "POST",
-            data: {Kundenadresse:Kundenadresse,Kundenname:Kundenname},
+            data: {Empfangsadresse:Empfangsadresse,Empfangsname:Empfangsname,message:message},
             success: function(data){
                 console.log("->", data);
                 if(data==="Message has been sent"){
@@ -178,7 +183,7 @@ function sendMail(Kundenadresse,Kundenname){
                 reject(data)
                 console.error("error", data);
             }
-        });*/
+        });
     })
 }
 

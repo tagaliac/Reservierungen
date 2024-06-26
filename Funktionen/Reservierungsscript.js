@@ -3,6 +3,10 @@ const URL = "Funktionen/MachReservierung.php";
 
 /**fügt die Rerservierung hinzu (Variablen in den Feldern definiert) */
 async function setReservierung(){
+    if(!confirm("Wollen Sie sicher die Reservierung abschließen?")){
+        document.getElementById('output').innerHTML="Reservierung abgebrochen";
+        return;
+    }
     let Kundenname = document.getElementById('setKundenname').value;
     let Bezahlort = document.getElementById('wahl').value;
     let Sitze = [];
@@ -105,6 +109,10 @@ function getNächsteFreieSitze(anzahl){
 
 /**löscht die Reservierung (Variablen in den Feldern definiert) */
 function deleteReservierung(ReservierungsID){
+    if(!confirm("Eintrag sicher löschen?")){
+        document.getElementById('output').innerHTML="nicht gelöscht";
+        return;
+    }
     if(ReservierungsID==null){
         console.log("ID not found")
         return
@@ -125,6 +133,10 @@ function deleteReservierung(ReservierungsID){
 
 /**Setzt die Bezahlung fest */
 function setBezahlung(Kundenname, value){
+    if(!confirm("Bezahlung eintragen")){
+        document.getElementById('output').innerHTML="Bezahlung nicht eingetragen";
+        return;
+    }
     $.ajax({
         url: URL,
         type: "POST",

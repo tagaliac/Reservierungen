@@ -1,0 +1,17 @@
+{
+    "RES_SUC":"Reservierung hinzugefügt\n",
+    "GET_FAIL":"Daten könnten nicht geladen werden\n",
+    "DEL_SUC":"Erfolgreich gelöscht\n",
+    "RES_FAIL":"Reservierung fehlgeschlagen\n",
+    "NAME_MISS":"Es fehlt der Kundenname\n",
+    "LOC_MISS":"Der Bezahlort fehlt\n",
+    "SEAT_NOTFREE":"Sitz schon belegt\n",
+    "CLI_SUC":"Kundeneintrag erfolgreich\n",
+    "CLI":"Kunde: ",
+    "LOC":"Bezahlort: ",
+    "SEAT":"Sitzplatz: " ,
+    "RES":"ReservierungsID: ",
+    "PAY":"Gezahlt: ",
+    "PAY_SUC":"Bezahlung wurde erfolgreich geupdated\n",
+    "PAY_MISS":"Kundenname könnte nicht gefunden werden\n"
+}

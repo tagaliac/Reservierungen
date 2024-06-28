@@ -1,14 +1,33 @@
 const GLOBALE_VARIABLE_LINK ="./Globale_Variablen.json";
-var jsonData;
 
 async function initSprache(Sprache){
     if(Sprache==null){
-        await fetch(GLOBALE_VARIABLE_LINK).then((response) => response.json()).then(data => {
-            jsonData=data
-            Sprache = data['Sprache'];
-        }).catch(error => console.log(error))
+        Sprache = await ladeSprache();
     }
 
+    setSprache(Sprache);
+}
+
+async function initKundenSprache(Sprache){
+    if(Sprache==null){
+        await ladeSprache().then(data => {
+            Sprache = data
+        }).catch();
+    }
+    Sprache += "Kunde";
+
+    setSprache(Sprache);
+}
+
+function ladeSprache(){
+    return new Promise((resolve,reject) => {
+        fetch(GLOBALE_VARIABLE_LINK).then((response) => response.json()).then(data => {
+            resolve(data['Sprache']);
+        }).catch(error => reject(error))
+    }) 
+}
+
+async function setSprache(Sprache){
     switch (Sprache){
         case "Deutsch":
             await fetch("./Sprachen/Deutsch.json").then((response) => response.json()).then(data => {
@@ -21,8 +40,10 @@ async function initSprache(Sprache){
             }).catch(error => console.log(error))
             break;
         default:
-            console.log("Sprache kann nicht geladen werden")
-}
+            await fetch("./Sprachen/"+Sprache+".json").then((response) => response.json()).then(data => {
+                setLanguage(data)
+            }).catch(error => console.log("Sprache kann nicht geladen werden "+error))
+    }
 }
 
 function setWord(id, text){

@@ -25,15 +25,16 @@
 
         <header>
             <nav>
-                <ul class="nav_links">
-                    <li><a onclick="initSprache('Griechisch')">ΕΛ</a></li>
-                    <li><a onclick="initSprache('Deutsch')">DE</a></li>
+                <ul align="right" class="nav_links">
+                    <li><a onclick="changeLanguage('Griechisch');initSprache('Griechisch');">ΕΛ</a></li>
+                    <li><a onclick="changeLanguage('Deutsch');initSprache('Deutsch');">DE</a></li>
                 </ul>
             </nav>
+            <hr class="horizontal line">
         </header>
             
         <!-- übersicht der Sitzplätze-->
-        <h1 class="header" align="center">Reservierungen</h1>
+        <h1 class="header" align="center" id="TITLE">Reservierungen</h1>
 
         <table style="width:100%">
 			<tr align="center">
@@ -79,7 +80,7 @@
                 <td style="width:25%">
                     <label for="delete" id="DEL_RES">Lösche Reservierung mit ID:</label>
                     <input class="input" type="number" id="delete"></br>
-                    <button class="submit" id="DEL_SUMMIT" onclick="deleteReservierung(document.getElementById('delete').value,true)">
+                    <button class="submit" id="DEL_SUMMIT" onclick="deleteReservierung(document.getElementById('delete').value,true,true)">
                         Lösche Reservierung
                     </button>
 				</td>

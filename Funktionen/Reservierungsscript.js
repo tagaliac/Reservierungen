@@ -43,7 +43,7 @@ async function setReservierung(){
                 sendMail(VEREINS_EMAIL, VEREINS_NAME, VEREINS_NACHRICHT)
             }).catch(e => {
                 makeCommand("SELECT ReservierungsID FROM reservierung WHERE SitzplatzLabel='"+Sitze[i]+"';").then(data=>{
-                    deleteReservierung(data,false);
+                    deleteReservierung(data,false,false);
                 }).finally(()=>{document.getElementById('output').innerHTML=e;})
             })
         }).catch(e => document.getElementById('output').innerHTML=e);
@@ -113,7 +113,7 @@ function getNächsteFreieSitze(anzahl){
 }
 
 /**löscht die Reservierung (Variablen in den Feldern definiert) */
-function deleteReservierung(ReservierungsID, bestaetigung){
+function deleteReservierung(ReservierungsID, bestaetigung, ausgabe){
     if(bestaetigung&&!confirm("Eintrag sicher löschen?")){
         document.getElementById('output').innerHTML="nicht gelöscht";
         return;
@@ -128,7 +128,9 @@ function deleteReservierung(ReservierungsID, bestaetigung){
         data: {Action:"delete",Inhalt:ReservierungsID},
         success: function(data){
             console.log("-> löschen erfolgreich", data);
-            document.getElementById('output').innerHTML=data;
+            if(ausgabe){
+                document.getElementById('output').innerHTML=data;
+            }
         },
         error: function(data){
             console.error("error", data);
@@ -204,4 +206,18 @@ function makeCommand(command){
             }
         });
     });    
+}
+
+function changeLanguage(newLanguage){
+    $.ajax({
+        url: URL,
+        type: "POST",
+        data: {Action:"Sprache",newLanguage:newLanguage},
+        success: function(data){
+            console.log("->", data);
+        },
+        error: function(data){
+            console.error("error", data);
+        }
+    });
 }

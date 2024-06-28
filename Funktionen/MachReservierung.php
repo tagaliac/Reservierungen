@@ -2,8 +2,17 @@
     /**import Database information*/
     require "DatabaseCon.php";
 
+    /**Konstantemn */
+    $GLOBAL_VALIABLE_FILE = "..\Globale_Variablen.json";
+
     /**import global variables */
-    $DEBUG_MODUS = json_decode(file_get_contents("..\Globale_Variablen.json"),false)->DEBUG_MODUS;
+    $GLOBAL_VALIABLE = json_decode(file_get_contents($GLOBAL_VALIABLE_FILE),false);
+    $DEBUG_MODUS = $GLOBAL_VALIABLE->DEBUG_MODUS;
+    $AusgewählteSprachen = $GLOBAL_VALIABLE->Sprache;
+
+    /**import language settings */
+    $DEUTSCH = json_decode(file_get_contents("..\Sprachen\DeutschAusgabe.json"),false);
+    $GRIECHISCH = json_decode(file_get_contents("..\Sprachen\GriechischAusgabe.json"),false);
 
     /**in debugging deactive*/
     if(!$DEBUG_MODUS){
@@ -24,7 +33,7 @@
                     $Kundennamen = htmlspecialchars($_POST['Kundenname']);
                     $Bezahlort = htmlspecialchars($_POST['Bezahlort']);
                     $Email = htmlspecialchars($_POST['Email']);
-                    setReservierung($Kundennamen,$Sitz,$Bezahlort,$Email,$con);
+                    echo setReservierung($Kundennamen,$Sitz,$Bezahlort,$Email,$con);
                     break;
                 case "get":
                     $auswahl = $_POST['Auswahl'];
@@ -41,6 +50,11 @@
                 case "Bezahlung":
                     echo setBezahlung($_POST["Kundenname"],$_POST['Inhalt'],$con);
                     break;
+                case "Sprache":
+                    $GLOBAL_VALIABLE->Sprache=$_POST["newLanguage"];
+                    $newJsonString = json_encode($GLOBAL_VALIABLE);
+                    file_put_contents($GLOBAL_VALIABLE_FILE, $newJsonString);
+                    break;
                 default:
                     $connect = mysqli_query($con, $action);
                     if(!$connect){
@@ -52,25 +66,36 @@
         }
     }
 
+    function translate($word){
+        global $DEUTSCH, $GRIECHISCH;
+        switch($GLOBALS['AusgewählteSprachen']){
+            case "Deutsch":
+                echo $DEUTSCH->$word;
+                break;
+            case "Griechisch":
+                echo $GRIECHISCH->$word;
+                break;
+            default:
+                echo "no translation";
+        }
+    }
+
     /**fügt einen Reservierungseintrag hinzu.
      * Wenn der Kunde nicht existiert wird dieser auch erstellt.
      */
     function setReservierung($Kundennamen, $Sitz, $Bezahlort,$Email, $con){
         /**Vorbedienungen */
         if($Kundennamen==null){
-            echo "Kundenname fehlt\n";
-            return;
+            return translate("NAME_MISS");
         }
         if($Bezahlort==null){
-            echo "Bezahlort fehlt\n";
-            return;
+            return translate("LOC_MISS");
         }
         if($Sitz==null||$Sitz===""){
             $Sitz = getFreiePlätze($con);
         }
         if(isBelegt($Sitz,$con)){
-            echo "Sitz schon belegt\n";
-            return;
+            return translate("SEAT_NOTFREE");
         }
 
         /**Kunden finden */
@@ -83,10 +108,10 @@
         changeSitzBelegung($Sitz,true,$con);
         $connect = mysqli_query($con, "INSERT INTO reservierung(KundenID,SitzplatzLabel) VALUES ('$Kunde','$Sitz');");
         if(!$connect){
-            echo "Reservierung fehlgeschlagen\n";
+            return translate("RES_FAIL");
             changeSitzBelegung($Sitz,false,$con);
         }else{
-            echo "Reservierung hinzugefügt\n ";
+            return translate("RES_SUC");
         }
     }
 
@@ -96,7 +121,7 @@
         if(!$connect){
             echo "Kundenname könnte nicht eingetragen werden\n";
         }else{
-            echo "Kundeneintrag erfolgreich\n";
+            translate("CLI_SUC");
         }
     }
 
@@ -121,7 +146,7 @@
                                             join sitzplatz on reservierung.SitzplatzLabel = sitzplatz.SitzplatzLabel
                                             WHERE kunde.Kundenname='$inhalt';");
                 if(!$connect){
-                    return "Daten könnten nicht geladen werden\n";
+                    return translate("GET_FAIL");
                 }else{
                     return getStringFromReservierungsdaten($connect);
                 }
@@ -133,7 +158,7 @@
                                             join sitzplatz on reservierung.SitzplatzLabel = sitzplatz.SitzplatzLabel
                                             WHERE sitzplatz.SitzplatzLabel='$inhalt';");
                 if(!$connect){
-                    return "Daten könnten nicht geladen werden\n";
+                    return translate("GET_FAIL");
                 }else{
                     return getStringFromReservierungsdaten($connect);
                 }
@@ -145,7 +170,7 @@
                                         join sitzplatz on reservierung.SitzplatzLabel = sitzplatz.SitzplatzLabel
                                         WHERE reservierung.ReservierungsID='$inhalt';");
                 if(!$connect){
-                    return "Daten könnten nicht geladen werden\n";
+                    return translate("GET_FAIL");
                 }else{
                     return getStringFromReservierungsdaten($connect);
                 }
@@ -158,7 +183,7 @@
         $Reservierung='';
         $rows = mysqli_fetch_all($connect, MYSQLI_ASSOC);
         if(count($rows)==0){
-            return "Kein Eintrag gefunden";
+            return translate('GET_FAIL');
         }
         foreach ($rows as $row){
             $Sitzplatz .= $row["Sitzplatz"] . ";";
@@ -170,7 +195,12 @@
             $gezahlt = $row["Gezahlt"]?"Ja":"Nein";
             break;
         }
-        return "Kunde: " . $name . "| Sitzplatz: " . $Sitzplatz . "| ReservierungsID: " . $Reservierung . "| Bezahlort: " . $Bezahlort . "| Gezahlt: " . $gezahlt . "\n";
+        $cli=translate("CLI");
+        $seat = translate("SEAT");
+        $res = translate("RES");
+        $loc = translate("LOC");
+        $pay = translate("PAY");
+        return $cli . $name . "| " . $seat . $Sitzplatz . "| " . $res . $Reservierung . "| " . $loc . $Bezahlort . "| " . $pay . $gezahlt . "\n";
     }
 
     /**erhalte den Sitzplatz mit der ReservierungsID */
@@ -204,7 +234,7 @@
             echo "Daten könnten nicht gelöscht werden\n";
             changeSitzBelegung($Sitz,true,$con);
         }else{
-            echo "erfolgreich gelöscht\n";
+            return translate("DEL_SUC");
         }
     }
 
@@ -240,14 +270,14 @@
     /**Setzt den Bazahlwert bei Kunden */
     function setBezahlung($Kunde,$value,$con){
         if(getKundenID($Kunde,$con)==0){
-            return "Kundenname könnte nicht gefunden werden";
+            return translate("PAY_MISS");
         }
 
         $connect = mysqli_query($con, "UPDATE kunde SET Gezahlt = $value WHERE Kundenname = '$Kunde';");
         if(!$connect){
             echo "Bazahlung kann nicht geupdated werden";
         }else{
-            return "Bezahlung wurde geupdated";
+            return translate("PAY_SUC");
         }
     }
 ?>

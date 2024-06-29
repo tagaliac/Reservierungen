@@ -1,21 +1,21 @@
 /**Konstanten */
+//const GLOBALE_VARIABLE_LINK ="./Globale_Variablen.json";
 const URL = "Funktionen/MachReservierung.php";
 const VEREINS_EMAIL = ""; //hier gehört Email vom Verein
 const KUNDEN_NACHRICHT = "test"; //hier gehört Nachricht an den Kunden
 const VEREINS_NAME = "Romania"; //hier gehört Name vom Emailaccount vom Verein
 const VEREINS_NACHRICHT = "bestätigt"; //hier gehört Nachricht in der Bestätigungsemail vom Verein
+var Sprache = "Deutsch";
 
 /**fügt die Rerservierung hinzu (Variablen in den Feldern definiert) */
 async function setReservierung(){
-    if(!confirm("Wollen Sie sicher die Reservierung abschließen?")){
-        document.getElementById('output').innerHTML="Reservierung abgebrochen";
-        return;
-    }
+    Sprache= await ladeSprache();
+    if(await NichtBestätigt("CONFIRM", "CANCEL",Sprache)){return;}
     let Kundenname = document.getElementById('setKundenname').value;
     let Bezahlort = document.getElementById('wahl').value;
     let Sitze = [];
     if(!bestaetigeEmail('email','BestatigeEmail')){
-        document.getElementById('output').innerHTML="Emaileinträge stimmen nicht überein";
+        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("EMAIL_CON_FAIL",Sprache);
         return;
     }
     let Email = document.getElementById('email').value;
@@ -33,8 +33,12 @@ async function setReservierung(){
         await getNächsteFreieSitze(AnzahlAutoSitze).then(data => {
             Sitze = data;
         }).catch(error => {
+            if(error==="NO_SEAT_LEFT"){
+                AnzahlAutoSitze=-1;
+            }
             document.getElementById('output').innerHTML=error;
         });
+        if(AnzahlAutoSitze<0){document.getElementById('output').innerHTML=await getTranslationFromAusgabe("NO_SEAT_LEFT",Sprache);}
     }
     for(let i=0;i<Sitze.length;i++){
         await setReservierungDB(Kundenname, Sitze[i], Bezahlort, Email).then(data=>{
@@ -91,7 +95,7 @@ function getReservierungDB(Auswahl, Inhalt){
 }
 
 /**gibt die nächsten Freien Sitzplätze zurück */
-function getNächsteFreieSitze(anzahl){
+async function getNächsteFreieSitze(anzahl){
     return new Promise((resolve,reject) =>{
         $.ajax({
             url: URL,
@@ -102,7 +106,7 @@ function getNächsteFreieSitze(anzahl){
                     resolve(data.split("|"))
                 }else{
                     console.log(data)
-                    reject("Sitzplätze nicht mehr vorhanden")
+                    reject("NO_SEAT_LEFT")
                 }
             },
             error: function(data){
@@ -113,11 +117,9 @@ function getNächsteFreieSitze(anzahl){
 }
 
 /**löscht die Reservierung (Variablen in den Feldern definiert) */
-function deleteReservierung(ReservierungsID, bestaetigung, ausgabe){
-    if(bestaetigung&&!confirm("Eintrag sicher löschen?")){
-        document.getElementById('output').innerHTML="nicht gelöscht";
-        return;
-    }
+async function deleteReservierung(ReservierungsID, bestaetigung, ausgabe){
+    Sprache= await ladeSprache();
+    if(bestaetigung&& await NichtBestätigt("CONFIRM_DEL", "CANCEL_DEL",Sprache)){return;}
     if(ReservierungsID==null){
         console.log("ID not found")
         return
@@ -139,11 +141,9 @@ function deleteReservierung(ReservierungsID, bestaetigung, ausgabe){
 }
 
 /**Setzt die Bezahlung fest */
-function setBezahlung(Kundenname, value){
-    if(!confirm("Bezahlung eintragen")){
-        document.getElementById('output').innerHTML="Bezahlung nicht eingetragen";
-        return;
-    }
+async function setBezahlung(Kundenname, value){
+    Sprache= await ladeSprache();
+    if(await NichtBestätigt("CONFIRM_PAY", "CANCEL_PAY",Sprache)){return;}
     $.ajax({
         url: URL,
         type: "POST",
@@ -220,4 +220,12 @@ function changeLanguage(newLanguage){
             console.error("error", data);
         }
     });
+}
+
+async function NichtBestätigt(key, value,Sprache){
+    if(!confirm(await getTranslationFromAusgabe(key,Sprache))){
+        document.getElementById('output').innerHTML=await getTranslationFromAusgabe(value,Sprache);
+        return true;
+    }
+    return false;
 }

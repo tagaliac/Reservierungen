@@ -46,6 +46,26 @@ async function setSprache(Sprache){
     }
 }
 
+async function getTranslationFromAusgabe(key, Sprache){
+    value = "confirm";
+
+    switch (Sprache){
+        case "Deutsch":
+            await fetch("./Sprachen/DeutschAusgabe.json").then((response) => response.json()).then(data => {
+                value = data[key];
+            }).catch(error => console.log(error))
+            break;
+        case "Griechisch":
+            await fetch("./Sprachen/GriechischAusgabe.json").then((response) => response.json()).then(data => {
+                value = data[key];
+            }).catch(error => console.log(error))
+            break;
+        default:
+            console.log("Sprache kann nicht geladen werden "+error);
+    }
+    return value;
+}
+
 function setWord(id, text){
     try{
         document.getElementById(id).innerHTML = text;

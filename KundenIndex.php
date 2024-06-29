@@ -27,10 +27,11 @@
         <header>
             <nav>
                 <ul align="right" class="nav_links">
-                    <li><a onclick="initKundenSprache('Griechisch');changeLanguage('Griechisch');">ΕΛ</a></li>
-                    <li><a onclick="initKundenSprache('Deutsch');changeLanguage('Deutsch');">DE</a></li>
+                    <li><a onclick="changeLanguage('Griechisch');initKundenSprache('Griechisch');">ΕΛ</a></li>
+                    <li><a onclick="changeLanguage('Deutsch');initKundenSprache('Deutsch');">DE</a></li>
                 </ul>
             </nav>
+            <hr class="horizontal line">
         </header>
 
         <!-- übersicht der Sitzplätze-->

@@ -70,13 +70,13 @@
         global $DEUTSCH, $GRIECHISCH;
         switch($GLOBALS['AusgewählteSprachen']){
             case "Deutsch":
-                echo $DEUTSCH->$word;
+                return $DEUTSCH->$word;
                 break;
             case "Griechisch":
-                echo $GRIECHISCH->$word;
+                return $GRIECHISCH->$word;
                 break;
             default:
-                echo "no translation";
+                return "no translation";
         }
     }
 
@@ -200,7 +200,7 @@
         $res = translate("RES");
         $loc = translate("LOC");
         $pay = translate("PAY");
-        return $cli . $name . "| " . $seat . $Sitzplatz . "| " . $res . $Reservierung . "| " . $loc . $Bezahlort . "| " . $pay . $gezahlt . "\n";
+        return $cli . $name . "| " . $seat . $Sitzplatz . "| " . $res . $Reservierung . "| " . $loc . $Bezahlort . "| " . $pay . $gezahlt . "\n"; 
     }
 
     /**erhalte den Sitzplatz mit der ReservierungsID */
@@ -275,7 +275,7 @@
 
         $connect = mysqli_query($con, "UPDATE kunde SET Gezahlt = $value WHERE Kundenname = '$Kunde';");
         if(!$connect){
-            echo "Bazahlung kann nicht geupdated werden";
+            return translate("PAY_FAIL");
         }else{
             return translate("PAY_SUC");
         }

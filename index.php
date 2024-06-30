@@ -22,7 +22,7 @@
         ?>
     </head>
     <body onload="initSprache()">
-
+        <!-- Der Header zur Spracheinstellungen -->
         <header>
             <nav>
                 <ul align="right" class="nav_links">
@@ -38,7 +38,7 @@
 
         <table style="width:100%">
 			<tr align="center">
-				<td style="width:25%" id="ADD_RES_TITLE">translater</td>
+				<td style="width:25%" id="ADD_RES_TITLE">Füge Reservierung hinzu</td>
 				<td style="width:25%" id="ADD_GET_TITLE">Schau Reservierungen</td>
 				<td style="width:25%" id="ADD_DEL_TITLE">Lösche Reservierung</td>
                 <td style="width:25%" id="ADD_PAY_TITLE">Ist schon bezahlt</td>
@@ -59,10 +59,10 @@
                     </select><br>
                     <label for="anzahlSitze", id="RES_AUTO_SEAT">Sitze automatisch gewählt?:</label>
                     <input class="input" type="number" id="anzahlSitze" value="1" min="1"></br></br>
-                    <a id="setSitze"><a>
                     <button class="submit" id="RES_SUMMIT" onclick="setReservierung()">
                         Bestätige Reservierung
                     </button>
+                    <br><a id="setSitze"><a>
 				</td>
 				<td style="width:25%">
                     <label for="wahl" id="GET_LOC">Wähle Suchoption:</label>
@@ -102,7 +102,7 @@
         <p id="speicher" values=""></p>
 
         <!--Ausgabefeld-->
-        <p id="output" style="width:100%" align="center"></p>
+        <p align="center" id="output" style="width:80%"></p>
         <canvas id="bild" width="2000px" height = "2000px">
 
         </canvas>
@@ -110,6 +110,7 @@
         <footer>
             <hr class="horizontal line">
             <div align="center">
+                <!-- Kontaktdaten eingeben!!! -->
                 <p s>Σύλλογος Ρομανία</p>
             </div>
         </footer>

@@ -1,8 +1,3 @@
-<?php   
-    /**import global variables */
-    $DEBUG_MODUS = json_decode(file_get_contents(".\Globale_Variablen.json"),false)->DEBUG_MODUS;
-
-?>
 <html>
     <head>
         <meta charset="UTF-8">
@@ -13,6 +8,9 @@
         <script type="text/JavaScript" src=".\Funktionen\Oberfläche.js"></script>
         <script type="text/JavaScript" src=".\Funktionen\Reservierungsscript.js"></script>
         <?php 
+            /**import global variables */
+            $DEBUG_MODUS = json_decode(file_get_contents(".\Globale_Variablen.json"),false)->DEBUG_MODUS;
+
             if($DEBUG_MODUS){
                 echo '<nav>
                         <ul class="nav_links">
@@ -24,6 +22,7 @@
         ?>
     </head>
     <body onload="initKundenSprache()">
+        <!-- Der Header zur Spracheinstellungen -->
         <header>
             <nav>
                 <ul align="right" class="nav_links">
@@ -77,12 +76,13 @@
                 </td>
             </tr>
         </table>
- 
+        
         <!--globale variablen-->
         <p id="speicher" values=""></p>
 
         <!--Ausgabefeld-->
-        <p id="output" style="width:80%"></p>
+        <p align="center" id="setSitze"><p><br>
+        <p align="center" id="output" style="width:80%"></p>
         <canvas id="bild" width="2000px" height = "2000px">
 
         </canvas>

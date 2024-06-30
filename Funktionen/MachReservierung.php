@@ -2,7 +2,7 @@
     /**import Database information*/
     require "DatabaseCon.php";
 
-    /**Konstantemn */
+    /**Konstanten */
     $GLOBAL_VALIABLE_FILE = "..\Globale_Variablen.json";
 
     /**import global variables */
@@ -17,8 +17,6 @@
     /**in debugging deactive*/
     if(!$DEBUG_MODUS){
         error_reporting(E_NOTICE);
-    }else{
-        echo "Debug Modus aktiv\n";
     }
 
     /**coding */
@@ -41,8 +39,7 @@
                     echo getReservierung($auswahl,$inhalt,$con);
                     break;
                 case "getFreienSitz":
-                    $anzahl = $_POST['anzahl'];
-                    echo getFreiePlätze($con,$anzahl);
+                    echo getFreiePlätze($con,$_POST['anzahl']);
                     break;
                 case "delete":
                     echo deleteReservierung($_POST['Inhalt'],$con);
@@ -71,10 +68,8 @@
         switch($GLOBALS['AusgewählteSprachen']){
             case "Deutsch":
                 return $DEUTSCH->$word;
-                break;
             case "Griechisch":
                 return $GRIECHISCH->$word;
-                break;
             default:
                 return "no translation";
         }
@@ -119,7 +114,7 @@
     function fügeKundenHinzu($Kundennamen,$Bezahlort,$Email,$con){
         $connect = mysqli_query($con, "INSERT INTO kunde(Kundenname,Bezahlort,Email) VALUES ('$Kundennamen','$Bezahlort','$Email');");
         if(!$connect){
-            echo "Kundenname könnte nicht eingetragen werden\n";
+            translate("GET_CLI_FAIL");
         }else{
             translate("CLI_SUC");
         }
@@ -129,7 +124,7 @@
     function getKundenID($Kundennamen,$con){
         $connect = mysqli_query($con, "SELECT KundenID FROM kunde WHERE Kundenname='$Kundennamen';");
         if(!$connect){
-            echo "Kundenname könnte nicht eingetragen werden\n";
+            translate("GET_CLI_FAIL");
             return 0;
         }else{
             return mysqli_fetch_array($connect)[0];
@@ -195,12 +190,11 @@
             $gezahlt = $row["Gezahlt"]?translate("YES"):translate("NO");
             break;
         }
-        $cli=translate("CLI");
-        $seat = translate("SEAT");
-        $res = translate("RES");
-        $loc = translate("LOC");
-        $pay = translate("PAY");
-        return $cli . $name . "| " . $seat . $Sitzplatz . "| " . $res . $Reservierung . "| " . $loc . $Bezahlort . "| " . $pay . $gezahlt . "\n"; 
+        return translate("CLI") . $name . "| " 
+                . translate("SEAT") . $Sitzplatz . "| " 
+                . translate("RES") . $Reservierung . "| "
+                . translate("LOC") . $Bezahlort . "| "
+                . translate("PAY") . $gezahlt . "\n"; 
     }
 
     /**erhalte den Sitzplatz mit der ReservierungsID */

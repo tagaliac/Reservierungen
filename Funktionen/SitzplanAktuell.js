@@ -27,31 +27,40 @@ function getMousePos(canvas, event){
     }
 }
 
+/**Übersetzt Fehlerausgabe */
+async function TranslateError(error,Sprache){
+    getTranslationFromAusgabe(error,Sprache).then(data => {output.innerHTML = data;});
+}
+
 /**Wenn Maus gedrückt wird */
 canvas.addEventListener("mousedown",(e) => {
     WähleSitzeAus(e);
 })
 
 /**Wählt sitzt aus und legt es in der Schlange */
-function WähleSitzeAus(event){
+async function WähleSitzeAus(event){
     const sitz = getSitz(getMousePos(canvas,event))
+    Sprache= await ladeSprache();
     if(sitz!=null){
         interactDatabase("SELECT belegt FROM sitzplatz WHERE SitzplatzLabel = '"+sitz+"';").then(data => {
-            if(data==1){throw "schon belegt"}
-            if(Ausgewaehlt.includes(sitz)){
-                Ausgewaehlt.splice(Ausgewaehlt.indexOf(sitz),1)
-            }else{
-                Ausgewaehlt.push(sitz);
+            if(data==1){
+                throw "BELEGT";
             }
-            result = "Ausgewählte Sitze:";
-            speicherort = speicher.value
-            Ausgewaehlt.forEach((value) => {
-                result = result+" "+value
-                speicher.value = speicherort +"/"+ value;
-            })
-            sitzeAuswahl.innerHTML = result
-            output.innerHTML = "";
-        }).catch(e => {output.innerHTML=e})
+            return getTranslationFromAusgabe("CHOOSE",Sprache)
+        }).then(data => {
+            sitzeAuswahl.innerHTML =data;
+                if(Ausgewaehlt.includes(sitz)){
+                    Ausgewaehlt.splice(Ausgewaehlt.indexOf(sitz),1)
+                }else{
+                    Ausgewaehlt.push(sitz);
+                }
+                speicherort = speicher.value
+                Ausgewaehlt.forEach((value) => {
+                    sitzeAuswahl.innerHTML += " "+value
+                    speicher.value = speicherort +"/"+ value;
+                })
+                output.innerHTML = "";
+        }).catch(error => {TranslateError(error,Sprache)})
     } 
 }
 
@@ -106,8 +115,8 @@ function getSitz(pos){
     let result = null
     Sitze.forEach(function(values, key){
         if(values.x==x && values.y==y){
-            result= key
-            return
+            result=key;
+            return;
         }
     });
     return result;
@@ -129,7 +138,7 @@ async function createSitzreihe(StelleX, StelleY, SitzeProTisch, Tische, label, a
 function interactDatabase(befehl){
     return new Promise((resolve, reject) => {
         $.ajax({
-            url: "./Funktionen/Sitzplanerstellung.php",
+            url: URL,
             type: "POST",
             data: {Action:befehl},
             success: function(data){

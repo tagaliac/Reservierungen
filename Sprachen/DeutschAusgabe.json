@@ -2,6 +2,7 @@
     "RES_SUC":"Reservierung hinzugefügt\n",
     "GET_FAIL":"Daten könnten nicht geladen werden\n",
     "DEL_SUC":"Erfolgreich gelöscht\n",
+    "DEL_MISS":"Es fehlt die ID",
     "RES_FAIL":"Reservierung fehlgeschlagen\n",
     "NAME_MISS":"Es fehlt der Kundenname\n",
     "LOC_MISS":"Der Bezahlort fehlt\n",
@@ -23,6 +24,9 @@
     "CANCEL_DEL":"Eintrag nicht gelöscht\n",
     "CONFIRM_DEL":"Eintrag sicher löschen?\n",
     "NO_SEAT_LEFT":"Keine Sitze mehr vorhanden\n",
-    "NO":"Nein\n",
-    "YES":"Ja\n"
+    "NO":"Nein",
+    "YES":"Ja",
+    "GET_CLI_FAIL":"Kundenname konnte nicht verarbeitet werden",
+    "CHOOSE":"Ausgewählte Sitze",
+    "BELEGT":"Schon belegt"
 }

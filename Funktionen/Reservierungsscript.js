@@ -1,11 +1,10 @@
 /**Konstanten */
-//const GLOBALE_VARIABLE_LINK ="./Globale_Variablen.json";
 const URL = "Funktionen/MachReservierung.php";
 const VEREINS_EMAIL = ""; //hier gehört Email vom Verein
 const KUNDEN_NACHRICHT = "test"; //hier gehört Nachricht an den Kunden
 const VEREINS_NAME = "Romania"; //hier gehört Name vom Emailaccount vom Verein
 const VEREINS_NACHRICHT = "bestätigt"; //hier gehört Nachricht in der Bestätigungsemail vom Verein
-var Sprache = "Deutsch";
+var Sprache = "Deutsch"; //Standardsprache
 
 /**fügt die Rerservierung hinzu (Variablen in den Feldern definiert) */
 async function setReservierung(){
@@ -19,7 +18,7 @@ async function setReservierung(){
         return;
     }
     let Email = document.getElementById('email').value;
-    let AnzahlAutoSitze = 1;
+    let AnzahlAutoSitze;
     try{
         AnzahlAutoSitze = document.getElementById('anzahlSitze').value;
     }catch(error){
@@ -120,9 +119,9 @@ async function getNächsteFreieSitze(anzahl){
 async function deleteReservierung(ReservierungsID, bestaetigung, ausgabe){
     Sprache= await ladeSprache();
     if(bestaetigung&& await NichtBestätigt("CONFIRM_DEL", "CANCEL_DEL",Sprache)){return;}
-    if(ReservierungsID==null){
-        console.log("ID not found")
-        return
+    if(ReservierungsID==""){
+        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("DEL_MISS",Sprache);
+        return;
     }
     $.ajax({
         url: URL,
@@ -142,8 +141,7 @@ async function deleteReservierung(ReservierungsID, bestaetigung, ausgabe){
 
 /**Setzt die Bezahlung fest */
 async function setBezahlung(Kundenname, value){
-    Sprache= await ladeSprache();
-    if(await NichtBestätigt("CONFIRM_PAY", "CANCEL_PAY",Sprache)){return;}
+    if(await NichtBestätigt("CONFIRM_PAY", "CANCEL_PAY",await ladeSprache())){return;}
     $.ajax({
         url: URL,
         type: "POST",
@@ -208,6 +206,7 @@ function makeCommand(command){
     });    
 }
 
+/**verändert die Sprache der Webseite */
 function changeLanguage(newLanguage){
     $.ajax({
         url: URL,
@@ -222,7 +221,12 @@ function changeLanguage(newLanguage){
     });
 }
 
-async function NichtBestätigt(key, value,Sprache){
+/**erstellt ein Bestätigungsbildschirm
+ * -key: Die Ausgabe beim Bestätigungsbildschirm
+ * -value: Die Abbruchausgabe
+ * -Sprache: De gewählte Sprache
+ */
+async function NichtBestätigt(key,value,Sprache){
     if(!confirm(await getTranslationFromAusgabe(key,Sprache))){
         document.getElementById('output').innerHTML=await getTranslationFromAusgabe(value,Sprache);
         return true;

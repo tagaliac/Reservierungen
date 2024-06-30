@@ -42,7 +42,7 @@ async function setSprache(Sprache){
         default:
             await fetch("./Sprachen/"+Sprache+".json").then((response) => response.json()).then(data => {
                 setLanguage(data)
-            }).catch(error => console.log("Sprache kann nicht geladen werden "+error))
+            }).catch(error => {console.log("Sprache kann nicht geladen werden "+error)})
     }
 }
 
@@ -61,7 +61,7 @@ async function getTranslationFromAusgabe(key, Sprache){
             }).catch(error => console.log(error))
             break;
         default:
-            console.log("Sprache kann nicht geladen werden "+error);
+            console.log("Sprache kann nicht geladen werden ");
     }
     return value;
 }
@@ -69,9 +69,7 @@ async function getTranslationFromAusgabe(key, Sprache){
 function setWord(id, text){
     try{
         document.getElementById(id).innerHTML = text;
-    }catch{
-
-    }
+    }catch{}
 }
 
 function setLanguage(translater){

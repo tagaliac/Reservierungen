@@ -192,7 +192,7 @@
         foreach($rows as $row){
             $name = $row["Kundennamen"];
             $Bezahlort = $row["Bezahlort"];
-            $gezahlt = $row["Gezahlt"]?"Ja":"Nein";
+            $gezahlt = $row["Gezahlt"]?translate("YES"):translate("NO");
             break;
         }
         $cli=translate("CLI");

@@ -22,5 +22,7 @@
     "CONFIRM_PAY":"Bezahlung eintragen\n",
     "CANCEL_DEL":"Eintrag nicht gelöscht\n",
     "CONFIRM_DEL":"Eintrag sicher löschen?\n",
-    "NO_SEAT_LEFT":"Keine Sitze mehr vorhanden\n"
+    "NO_SEAT_LEFT":"Keine Sitze mehr vorhanden\n",
+    "NO":"Nein\n",
+    "YES":"Ja\n"
 }

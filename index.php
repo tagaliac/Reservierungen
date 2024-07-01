@@ -21,7 +21,7 @@
             }
         ?>
     </head>
-    <body onload="initSprache()">
+    <body onload="initSprache();loadSitzplan();">
         <!-- Der Header zur Spracheinstellungen -->
         <header>
             <nav>
@@ -59,7 +59,7 @@
                     </select><br>
                     <label for="anzahlSitze", id="RES_AUTO_SEAT">Sitze automatisch gewählt?:</label>
                     <input class="input" type="number" id="anzahlSitze" value="1" min="1"></br></br>
-                    <button class="submit" id="RES_SUMMIT" onclick="setReservierung()">
+                    <button class="submit" id="RES_SUMMIT" onclick="setReservierung_reload()">
                         Bestätige Reservierung
                     </button>
                     <br><a id="setSitze"><a>
@@ -80,7 +80,8 @@
                 <td style="width:25%">
                     <label for="delete" id="DEL_RES">Lösche Reservierung mit ID:</label>
                     <input class="input" type="number" id="delete"></br>
-                    <button class="submit" id="DEL_SUMMIT" onclick="deleteReservierung(document.getElementById('delete').value,true,true)">
+                    <button class="submit" id="DEL_SUMMIT"
+                        onclick="deleteReservierung_reload(document.getElementById('delete').value,true,true)">
                         Lösche Reservierung
                     </button>
 				</td>
@@ -92,7 +93,8 @@
                         <option value="ja" id="PAY_VAL_YES">Ja</option>
                         <option value="nein" id="PAY_VAL_NO">Nein</option>
                     </select><br>
-                    <button class="submit" id="PAY_SUMMIT" onclick="setBezahlung(document.getElementById('bezahltKundenname').value,document.getElementById('bezahlt').value)">
+                    <button class="submit" id="PAY_SUMMIT"
+                         onclick="setBezahlung(document.getElementById('bezahltKundenname').value,document.getElementById('bezahlt').value)">
                         Setzt Bezahlung
                     </button>
 				</td>

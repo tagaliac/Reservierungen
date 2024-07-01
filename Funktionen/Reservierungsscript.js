@@ -5,6 +5,15 @@ const KUNDEN_NACHRICHT = "test"; //hier gehört Nachricht an den Kunden
 const VEREINS_NAME = "Romania"; //hier gehört Name vom Emailaccount vom Verein
 const VEREINS_NACHRICHT = "bestätigt"; //hier gehört Nachricht in der Bestätigungsemail vom Verein
 var Sprache = "Deutsch"; //Standardsprache
+var DEBUG_MODUS = false;
+
+ladeDebugModus().then(data => {DEBUG_MODUS=data;});
+
+/**fügt die Rerservierung hinzu (Variablen in den Feldern definiert) und ladet Sitzplan neu*/
+async function setReservierung_reload(){
+    await setReservierung()
+    loadSitzplan();
+}
 
 /**fügt die Rerservierung hinzu (Variablen in den Feldern definiert) */
 async function setReservierung(){
@@ -28,7 +37,6 @@ async function setReservierung(){
         Sitze = document.getElementById('speicher').value.split("/");
         Sitze.shift();
     }catch(e){
-        console.log(AnzahlAutoSitze);
         await getNächsteFreieSitze(AnzahlAutoSitze).then(data => {
             Sitze = data;
         }).catch(error => {
@@ -46,7 +54,7 @@ async function setReservierung(){
                 sendMail(VEREINS_EMAIL, VEREINS_NAME, VEREINS_NACHRICHT)
             }).catch(e => {
                 makeCommand("SELECT ReservierungsID FROM reservierung WHERE SitzplatzLabel='"+Sitze[i]+"';").then(data=>{
-                    deleteReservierung(data,false,false);
+                    deleteReservierung_reload(data,false,false);
                 }).finally(()=>{document.getElementById('output').innerHTML=e;})
             })
         }).catch(e => document.getElementById('output').innerHTML=e);
@@ -115,6 +123,12 @@ async function getNächsteFreieSitze(anzahl){
     })
 }
 
+/**löscht die Reservierung (Variablen in den Feldern definiert) und ladet den Sitzplan neu */
+async function deleteReservierung_reload(ReservierungsID, bestaetigung, ausgabe){
+    await deleteReservierung(ReservierungsID, bestaetigung, ausgabe);
+    loadSitzplan();
+}
+
 /**löscht die Reservierung (Variablen in den Feldern definiert) */
 async function deleteReservierung(ReservierungsID, bestaetigung, ausgabe){
     Sprache= await ladeSprache();
@@ -164,26 +178,28 @@ function bestaetigeEmail(IdOfFirstHTML,IdOfSecondHTML){
 /**Sendet eine Email; Work in Progress */
 function sendMail(Empfangsadresse,Empfangsname,message){
     return new Promise((resolve,reject) => {
-        /*da Email noch nicht implementiert*/
-        //resolve("email noch nicht gesendet, weil work in Progress")
-
-        $.ajax({
-            url: "sendMail.php",
-            type: "POST",
-            data: {Empfangsadresse:Empfangsadresse,Empfangsname:Empfangsname,message:message},
-            success: function(data){
-                console.log("->", data);
-                if(data==="Message has been sent"){
-                    resolve(data)
-                }else{
+        if(DEBUG_MODUS){
+            /*da Email noch nicht implementiert*/
+            resolve("email noch nicht gesendet, weil work in Progress")
+        }else{
+            $.ajax({
+                url: "sendMail.php",
+                type: "POST",
+                data: {Empfangsadresse:Empfangsadresse,Empfangsname:Empfangsname,message:message},
+                success: function(data){
+                    console.log("->", data);
+                    if(data==="Message has been sent"){
+                        resolve(data)
+                    }else{
+                        reject(data)
+                    }
+                },
+                error: function(data){
                     reject(data)
+                    console.error("error", data);
                 }
-            },
-            error: function(data){
-                reject(data)
-                console.error("error", data);
-            }
-        });
+            });
+        }
     })
 }
 

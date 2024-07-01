@@ -18,6 +18,7 @@
     if(!$DEBUG_MODUS){
         error_reporting(E_NOTICE);
     }
+    error_reporting(E_NOTICE);
 
     /**coding */
     if($_SERVER["REQUEST_METHOD"]=="POST"){
@@ -98,6 +99,9 @@
             fügeKundenHinzu($Kundennamen,$Bezahlort,$Email,$con);
         }
         $Kunde = getKundenID($Kundennamen,$con);
+        if(getBezahlung($Kunde,$con)){
+            return translate("ALREADY_PAY");
+        }
         
         /**Reservierung erstellt */
         changeSitzBelegung($Sitz,true,$con);
@@ -261,7 +265,7 @@
         }
     }
 
-    /**Setzt den Bazahlwert bei Kunden */
+    /**Setzt den Bezahlwert bei Kunden */
     function setBezahlung($Kunde,$value,$con){
         if(getKundenID($Kunde,$con)==0){
             return translate("PAY_MISS");
@@ -272,6 +276,16 @@
             return translate("PAY_FAIL");
         }else{
             return translate("PAY_SUC");
+        }
+    }
+
+    /**Erhält den Bezahlwert bei Kunden */
+    function getBezahlung($Kunde,$con){
+        $connect = mysqli_query($con, "SELECT Gezahlt FROM `kunde` WHERE KundenID='$Kunde';");
+        if(!$connect){
+            return "Connection Problem (getBezahlung)";
+        }else{
+            return (mysqli_fetch_array($connect)[0]==1);
         }
     }
 ?>

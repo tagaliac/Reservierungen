@@ -77,3 +77,11 @@ function setLanguage(translater){
         setWord(value,translater[value]);
     }
 }
+
+function ladeDebugModus(){
+    return new Promise((resolve,reject) => {
+        fetch(GLOBALE_VARIABLE_LINK).then((response) => response.json()).then(data => {
+            resolve(data['DEBUG_MODUS']);
+        }).catch(error => reject(error))
+    }) 
+}

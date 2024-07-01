@@ -28,5 +28,6 @@
     "YES":"Ja",
     "GET_CLI_FAIL":"Kundenname konnte nicht verarbeitet werden",
     "CHOOSE":"Ausgewählte Sitze",
-    "BELEGT":"Schon belegt"
+    "BELEGT":"Schon belegt",
+    "ALREADY_PAY":"Dieser Kunde hat schon eine Reservierung gemacht und gezahlt. Zum Umreservieren oder Stonieren, bitte anrufen\n"
 }

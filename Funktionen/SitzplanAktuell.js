@@ -44,6 +44,7 @@ async function WähleSitzeAus(event){
     if(sitz!=null){
         interactDatabase("SELECT belegt FROM sitzplatz WHERE SitzplatzLabel = '"+sitz+"';").then(data => {
             if(data==1){
+                loadSitzplan();
                 throw "BELEGT";
             }
             return getTranslationFromAusgabe("CHOOSE",Sprache)

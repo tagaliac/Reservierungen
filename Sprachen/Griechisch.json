@@ -22,5 +22,6 @@
     "PAY_VAL":"Πληρωμένο:",
     "PAY_VAL_YES":"Ναι",
     "PAY_VAL_NO":"Όχι",
-    "PAY_SUMMIT":"Ενημέρωση"
+    "PAY_SUMMIT":"Ενημέρωση",
+    "PASS_DES":"Εισάγετε κωδικό:"
 }

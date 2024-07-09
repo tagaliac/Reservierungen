@@ -4,10 +4,21 @@ const VEREINS_EMAIL = ""; //hier gehört Email vom Verein
 const KUNDEN_NACHRICHT = "test"; //hier gehört Nachricht an den Kunden
 const VEREINS_NAME = "Romania"; //hier gehört Name vom Emailaccount vom Verein
 const VEREINS_NACHRICHT = "bestätigt"; //hier gehört Nachricht in der Bestätigungsemail vom Verein
+const PASSWORT = "ja"; //Erstelle Passwort zur Bestätigung
 var Sprache = "Deutsch"; //Standardsprache
 var DEBUG_MODUS = false;
 
 ladeDebugModus().then(data => {DEBUG_MODUS=data;});
+
+/**fügt die Rerservierung nach Passwortüberprüfung hinzu (Variablen in den Feldern definiert) und ladet Sitzplan neu*/
+async function setReservierung_passwort(){
+    if(Passwortcheck()){
+        setReservierung_reload();
+    }else{
+        Sprache= await ladeSprache();
+        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("PASS_FAIL",Sprache);
+    }
+}
 
 /**fügt die Rerservierung hinzu (Variablen in den Feldern definiert) und ladet Sitzplan neu*/
 async function setReservierung_reload(){
@@ -123,6 +134,16 @@ async function getNächsteFreieSitze(anzahl){
     })
 }
 
+/**löscht die Reservierung nach Passwortüberprüfung (Variablen in den Feldern definiert) und ladet Sitzplan neu*/
+async function deleteReservierung_passwort(ReservierungsID, bestaetigung, ausgabe){
+    if(Passwortcheck()){
+        deleteReservierung_reload(ReservierungsID, bestaetigung, ausgabe);
+    }else{
+        Sprache= await ladeSprache();
+        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("PASS_FAIL",Sprache);
+    }
+}
+
 /**löscht die Reservierung (Variablen in den Feldern definiert) und ladet den Sitzplan neu */
 async function deleteReservierung_reload(ReservierungsID, bestaetigung, ausgabe){
     await deleteReservierung(ReservierungsID, bestaetigung, ausgabe);
@@ -151,6 +172,15 @@ async function deleteReservierung(ReservierungsID, bestaetigung, ausgabe){
             console.error("error", data);
         }
     });
+}
+
+async function setBezahlung_passwort(Kundenname,value){
+    if(Passwortcheck()){
+        setBezahlung(Kundenname,value);
+    }else{
+        Sprache= await ladeSprache();
+        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("PASS_FAIL",Sprache);
+    }
 }
 
 /**Setzt die Bezahlung fest */
@@ -248,4 +278,9 @@ async function NichtBestätigt(key,value,Sprache){
         return true;
     }
     return false;
+}
+
+/**checkt ob Passwort richtig ist */
+function Passwortcheck(){
+    return document.getElementById('pass').value===PASSWORT;
 }

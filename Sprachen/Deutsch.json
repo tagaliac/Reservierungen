@@ -22,5 +22,6 @@
     "PAY_VAL":"Ist schon Bezahlt:",
     "PAY_VAL_YES":"Ja",
     "PAY_VAL_NO":"Nein",
-    "PAY_SUMMIT":"Setzt Bezahlung"
+    "PAY_SUMMIT":"Setzt Bezahlung",
+    "PASS_DES":"Gibt Code ein:"
 }

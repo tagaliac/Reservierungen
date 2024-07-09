@@ -15,8 +15,8 @@ Aufrufen der Seite
 - Startet den XAMPP Comtrol Panel
 - Startet Apache und MySQL
 - Die Localen Links sind
-	-für Kunden: http://localhost/[der Datenordner]/KundenIndex.php
-	-für Vereinsmitglieder http://localhost/[der Datenordner]/index.php
+	-für Kunden: http://localhost/[der Datenordner]/index.php
+	-für Vereinsmitglieder http://localhost/[der Datenordner]/AdminRomania.php
 	-für Admin: http://localhost/phpmyadmin/index.php
 - Der Server läuft auf dem Port 80443. Da es der selbe Port ist wie Skype soll entweder Skype deinstalliert werden oder der Port gewechselt werden
 - Erstellt im Adminlink den Benutzer "AdminReservierung" mit dem Passwort "Romania1234".

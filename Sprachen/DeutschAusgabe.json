@@ -29,6 +29,7 @@
     "GET_CLI_FAIL":"Kundenname konnte nicht verarbeitet werden",
     "CHOOSE":"Ausgewählte Sitze",
     "BELEGT":"Schon belegt",
+    "NEAR_SEAT":"Nur benachbarte Sitze auswählbar",
     "ALREADY_PAY":"Dieser Kunde hat schon eine Reservierung gemacht und gezahlt. Zum Umreservieren oder Stonieren, bitte anrufen\n",
     "PASS_FAIL":"Passwort ist falsch"
 }

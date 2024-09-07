@@ -1,6 +1,6 @@
 /**Konstanten */
 const URL = "Funktionen/MachReservierung.php";
-const VEREINS_EMAIL = ""; //hier gehört Email vom Verein
+const VEREINS_EMAIL = "iromania@pontos-stuttgart.de"; //hier gehört Email vom Verein
 const KUNDEN_NACHRICHT = "test"; //hier gehört Nachricht an den Kunden
 const VEREINS_NAME = "Romania"; //hier gehört Name vom Emailaccount vom Verein
 const VEREINS_NACHRICHT = "bestätigt"; //hier gehört Nachricht in der Bestätigungsemail vom Verein

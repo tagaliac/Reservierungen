@@ -42,6 +42,10 @@ async function WähleSitzeAus(event){
     const sitz = getSitz(getMousePos(canvas,event))
     Sprache= await ladeSprache();
     if(sitz!=null){
+        if(!NebenAusgewählteSitzplätze(sitz)){
+            TranslateError("NEAR_SEAT",Sprache)
+            return
+        }
         interactDatabase("SELECT belegt FROM sitzplatz WHERE SitzplatzLabel = '"+sitz+"';").then(data => {
             if(data==1){
                 loadSitzplan();
@@ -121,6 +125,20 @@ function getSitz(pos){
         }
     });
     return result;
+}
+
+function NebenAusgewählteSitzplätze(sitz){
+    if(Ausgewaehlt.length==0){
+        return true;
+    }
+    let number = Number(sitz.substring(1))
+    for(let i=0;i<Ausgewaehlt.length;i++){
+        if((Math.abs(Number(Ausgewaehlt[i].substring(1))-number)<2) &&
+           sitz.substring(0,1)==Ausgewaehlt[i].substring(0,1)){
+            return true;
+        }
+    }
+    return false;
 }
 
 async function createSitzreihe(StelleX, StelleY, SitzeProTisch, Tische, label, anfangsSitznummer, anfangsTischnummer){

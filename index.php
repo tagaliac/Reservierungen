@@ -21,7 +21,7 @@
             }
         ?>
     </head>
-    <body onload="initKundenSprache();loadSitzplan();">
+    <body onload="initKundenSprache();LoadSitzplan();">
         <!-- Der Header zur Spracheinstellungen -->
         <header>
             <nav>
@@ -70,7 +70,7 @@
                 <td style="width:40%">
                     <label for="anzahlSitze" id="AMOUNTH_SEAT">Wie viele Sitze werden automatisch ausgewählt?:</label>
                     <input class="input" type="number" id="anzahlSitze" value="1" min="1"></br>
-                    <button class="submit" onclick="setReservierung_reload()" id="RES_SUB">
+                    <button class="submit" onclick="SetReservierungAndReload()" id="RES_SUB">
                         Bestätige Reservierung
                     </button>
                 </td>

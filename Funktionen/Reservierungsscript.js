@@ -5,39 +5,43 @@ const KUNDEN_NACHRICHT = "test"; //hier gehört Nachricht an den Kunden
 const VEREINS_NAME = "Romania"; //hier gehört Name vom Emailaccount vom Verein
 const VEREINS_NACHRICHT = "bestätigt"; //hier gehört Nachricht in der Bestätigungsemail vom Verein
 const PASSWORT = "ja"; //Erstelle Passwort zur Bestätigung
-var Sprache = "Deutsch"; //Standardsprache
+var sprache = "Deutsch"; //Standardsprache
 var DEBUG_MODUS = false;
 
-ladeDebugModus().then(data => {DEBUG_MODUS=data;});
+ladeDebugModus().then(data => {DEBUG_MODUS = data;});
 
 /**fügt die Rerservierung nach Passwortüberprüfung hinzu (Variablen in den Feldern definiert) und ladet Sitzplan neu*/
 async function setReservierung_passwort(){
-    if(Passwortcheck()){
-        setReservierung_reload();
+    if(CheckPasswort()){
+        SetReservierungAndReload();
     }else{
-        Sprache= await ladeSprache();
-        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("PASS_FAIL",Sprache);
+        sprache = await ladeSprache();
+        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("PASS_FAIL",sprache);
     }
 }
 
 /**fügt die Rerservierung hinzu (Variablen in den Feldern definiert) und ladet Sitzplan neu*/
-async function setReservierung_reload(){
-    await setReservierung()
-    loadSitzplan();
+async function SetReservierungAndReload(){
+    await SetReservierung()
+    LoadSitzplan();
 }
 
 /**fügt die Rerservierung hinzu (Variablen in den Feldern definiert) */
-async function setReservierung(){
-    Sprache= await ladeSprache();
-    if(await NichtBestätigt("CONFIRM", "CANCEL",Sprache)){return;}
+async function SetReservierung(){
+    sprache = await ladeSprache();
+
+    if(await NichtBestätigt("CONFIRM", "CANCEL", sprache)){return;}
+
     let Kundenname = document.getElementById('setKundenname').value;
     let Bezahlort = document.getElementById('wahl').value;
     let Sitze = [];
+
     if(!bestaetigeEmail('email','BestatigeEmail')){
-        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("EMAIL_CON_FAIL",Sprache);
+        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("EMAIL_CON_FAIL",sprache);
         return;
     }
     let Email = document.getElementById('email').value;
+
     let AnzahlAutoSitze;
     try{
         AnzahlAutoSitze = document.getElementById('anzahlSitze').value;
@@ -48,31 +52,31 @@ async function setReservierung(){
         Sitze = document.getElementById('speicher').value.split("/");
         Sitze.shift();
     }catch(e){
-        await getNächsteFreieSitze(AnzahlAutoSitze).then(data => {
+        await GetNächsteFreieSitze(AnzahlAutoSitze).then(data => {
             Sitze = data;
         }).catch(error => {
-            if(error==="NO_SEAT_LEFT"){
-                AnzahlAutoSitze=-1;
+            if(error === "NO_SEAT_LEFT"){
+                AnzahlAutoSitze = -1;
             }
             document.getElementById('output').innerHTML=error;
         });
-        if(AnzahlAutoSitze<0){document.getElementById('output').innerHTML=await getTranslationFromAusgabe("NO_SEAT_LEFT",Sprache);}
+        if(AnzahlAutoSitze < 0){document.getElementById('output').innerHTML = await getTranslationFromAusgabe("NO_SEAT_LEFT",sprache);}
     }
-    for(let i=0;i<Sitze.length;i++){
-        await setReservierungDB(Kundenname, Sitze[i], Bezahlort, Email).then(data=>{
+    for(let i = 0; i < Sitze.length; i++){
+        await SetReservierungInDB(Kundenname, Sitze[i], Bezahlort, Email).then(data=>{
             sendMail(Email,Kundenname,KUNDEN_NACHRICHT).then(data1 =>{
                 document.getElementById('output').innerHTML=data+". "+data1;
                 sendMail(VEREINS_EMAIL, VEREINS_NAME, VEREINS_NACHRICHT)
             }).catch(e => {
                 makeCommand("SELECT ReservierungsID FROM reservierung WHERE SitzplatzLabel='"+Sitze[i]+"';").then(data=>{
-                    deleteReservierung_reload(data,false,false);
+                    DeleteReservierungAndReload(data,false,false);
                 }).finally(()=>{document.getElementById('output').innerHTML=e;})
             })
         }).catch(e => document.getElementById('output').innerHTML=e);
     }
 }
 /**fügt die Rerservierung in der Datenbank hinzu */
-function setReservierungDB(Kundenname, Sitz, Bezahlort, Email){
+function SetReservierungInDB(Kundenname, Sitz, Bezahlort, Email){
     return new Promise((resolve,reject) =>{
         $.ajax({
             url: URL,
@@ -91,13 +95,13 @@ function setReservierungDB(Kundenname, Sitz, Bezahlort, Email){
 }
 
 /**gibt alle Reservierungsdaten zurück (Variablen in den Feldern definiert) */
-function getReservierung(){
+function GetReservierung(){
     let Auswahl = document.getElementById('suchOption').value;
     let Inhalt = document.getElementById('inhalt').value;
-    getReservierungDB(Auswahl,Inhalt);
+    GetReservierungDB(Auswahl,Inhalt);
 }
 /**gibt alle Reservierungsdaten aus der Datenbank zurück */
-function getReservierungDB(Auswahl, Inhalt){
+function GetReservierungDB(Auswahl, Inhalt){
     $.ajax({
         url: URL,
         type: "POST",
@@ -113,7 +117,7 @@ function getReservierungDB(Auswahl, Inhalt){
 }
 
 /**gibt die nächsten Freien Sitzplätze zurück */
-async function getNächsteFreieSitze(anzahl){
+async function GetNächsteFreieSitze(anzahl){
     return new Promise((resolve,reject) =>{
         $.ajax({
             url: URL,
@@ -135,29 +139,31 @@ async function getNächsteFreieSitze(anzahl){
 }
 
 /**löscht die Reservierung nach Passwortüberprüfung (Variablen in den Feldern definiert) und ladet Sitzplan neu*/
-async function deleteReservierung_passwort(ReservierungsID, bestaetigung, ausgabe){
-    if(Passwortcheck()){
-        deleteReservierung_reload(ReservierungsID, bestaetigung, ausgabe);
+async function DeleteReservierung_passwort(ReservierungsID, bestaetigung, ausgabe){
+    if(CheckPasswort()){
+        DeleteReservierungAndReload(ReservierungsID, bestaetigung, ausgabe);
     }else{
-        Sprache= await ladeSprache();
-        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("PASS_FAIL",Sprache);
+        sprache = await ladeSprache();
+        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("PASS_FAIL",sprache);
     }
 }
 
 /**löscht die Reservierung (Variablen in den Feldern definiert) und ladet den Sitzplan neu */
-async function deleteReservierung_reload(ReservierungsID, bestaetigung, ausgabe){
-    await deleteReservierung(ReservierungsID, bestaetigung, ausgabe);
-    loadSitzplan();
+async function DeleteReservierungAndReload(ReservierungsID, bestaetigung, ausgabe){
+    await DeleteReservierung(ReservierungsID, bestaetigung, ausgabe);
+    LoadSitzplan();
 }
 
 /**löscht die Reservierung (Variablen in den Feldern definiert) */
-async function deleteReservierung(ReservierungsID, bestaetigung, ausgabe){
-    Sprache= await ladeSprache();
-    if(bestaetigung&& await NichtBestätigt("CONFIRM_DEL", "CANCEL_DEL",Sprache)){return;}
-    if(ReservierungsID==""){
-        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("DEL_MISS",Sprache);
+async function DeleteReservierung(ReservierungsID, bestaetigung, ausgabe){
+    sprache = await ladeSprache();
+
+    if(bestaetigung && await NichtBestätigt("CONFIRM_DEL", "CANCEL_DEL",sprache)) {return;}
+    if(ReservierungsID == ""){
+        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("DEL_MISS",sprache);
         return;
     }
+
     $.ajax({
         url: URL,
         type: "POST",
@@ -174,17 +180,17 @@ async function deleteReservierung(ReservierungsID, bestaetigung, ausgabe){
     });
 }
 
-async function setBezahlung_passwort(Kundenname,value){
-    if(Passwortcheck()){
-        setBezahlung(Kundenname,value);
+async function SetBezahlung_passwort(kundenname, value){
+    if(CheckPasswort()){
+        SetBezahlung(kundenname, value);
     }else{
-        Sprache= await ladeSprache();
-        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("PASS_FAIL",Sprache);
+        sprache = await ladeSprache();
+        document.getElementById('output').innerHTML=await getTranslationFromAusgabe("PASS_FAIL",sprache);
     }
 }
 
 /**Setzt die Bezahlung fest */
-async function setBezahlung(Kundenname, value){
+async function SetBezahlung(Kundenname, value){
     if(await NichtBestätigt("CONFIRM_PAY", "CANCEL_PAY",await ladeSprache())){return;}
     $.ajax({
         url: URL,
@@ -274,13 +280,13 @@ function changeLanguage(newLanguage){
  */
 async function NichtBestätigt(key,value,Sprache){
     if(!confirm(await getTranslationFromAusgabe(key,Sprache))){
-        document.getElementById('output').innerHTML=await getTranslationFromAusgabe(value,Sprache);
+        document.getElementById('output').innerHTML = await getTranslationFromAusgabe(value,Sprache);
         return true;
     }
     return false;
 }
 
 /**checkt ob Passwort richtig ist */
-function Passwortcheck(){
-    return document.getElementById('pass').value===PASSWORT;
+function CheckPasswort(){
+    return document.getElementById('pass').value === PASSWORT;
 }

@@ -1,7 +1,7 @@
 const GLOBALE_VARIABLE_LINK ="./Globale_Variablen.json";
 
 async function initSprache(Sprache){
-    if(Sprache==null){
+    if(Sprache == null){
         Sprache = await ladeSprache();
     }
 
@@ -9,7 +9,7 @@ async function initSprache(Sprache){
 }
 
 async function initKundenSprache(Sprache){
-    if(Sprache==null){
+    if(Sprache == null){
         await ladeSprache().then(data => {
             Sprache = data
         }).catch();

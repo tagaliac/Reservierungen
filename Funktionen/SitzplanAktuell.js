@@ -9,7 +9,7 @@ const sitzeAuswahl= document.getElementById("setSitze");
 const speicher = document.getElementById("speicher");
 const output = document.getElementById("output");
 var Sitze = new Map()
-var Ausgewaehlt = []
+var ausgewaehlt = []
 
 /**Konstanten Farben */
 const TISCHFARBE = "cyan";
@@ -48,19 +48,19 @@ async function WähleSitzeAus(event){
         }
         interactDatabase("SELECT belegt FROM sitzplatz WHERE SitzplatzLabel = '"+sitz+"';").then(data => {
             if(data==1){
-                loadSitzplan();
+                LoadSitzplan();
                 throw "BELEGT";
             }
             return getTranslationFromAusgabe("CHOOSE",Sprache)
         }).then(data => {
             sitzeAuswahl.innerHTML =data;
-                if(Ausgewaehlt.includes(sitz)){
-                    Ausgewaehlt.splice(Ausgewaehlt.indexOf(sitz),1)
+                if(ausgewaehlt.includes(sitz)){
+                    ausgewaehlt.splice(ausgewaehlt.indexOf(sitz),1)
                 }else{
-                    Ausgewaehlt.push(sitz);
+                    ausgewaehlt.push(sitz);
                 }
                 speicherort = speicher.value
-                Ausgewaehlt.forEach((value) => {
+                ausgewaehlt.forEach((value) => {
                     sitzeAuswahl.innerHTML += " "+value
                     speicher.value = speicherort +"/"+ value;
                 })
@@ -91,14 +91,14 @@ function createRectangle(StelleX, StelleY, width, heigth, color){
     bild.fillRect(toCoX(StelleX),toCoY(StelleY), width*WIDTHBOX, heigth*HEIGHTBOX);
     bild.strokeRect(toCoX(StelleX),toCoY(StelleY), width*WIDTHBOX, heigth*HEIGHTBOX);
 }
-function createRectangleWithText(StelleX, StelleY, width, heigth, text, color){
+function CreateRectangleWithText(StelleX, StelleY, width, heigth, text, color){
     bild.beginPath();
     createRectangle(StelleX,StelleY,width,heigth,color);
     bild.fillStyle = TEXTFARBE;
     bild.fillText(text,toCoX(StelleX)+(WIDTHBOX*width)/TEXTOFFSET_WIDTH,toCoY(StelleY)+(heigth*HEIGHTBOX)/TEXTOFFSET_HEIGHT)
 }
 
-async function createCircleWithText(StelleX,StelleY,radius,text){
+async function CreateCircleWithText(StelleX,StelleY,radius,text){
     await interactDatabase("INSERT INTO sitzplatz(SitzplatzLabel) VALUES ('"+text+"')").then((e) => {
         interactDatabase("SELECT Belegt FROM sitzplatz WHERE SitzplatzLabel='"+text+"';").then((data)=>{
             bild.beginPath();
@@ -128,25 +128,25 @@ function getSitz(pos){
 }
 
 function NebenAusgewählteSitzplätze(sitz){
-    if(Ausgewaehlt.length==0){
+    if(ausgewaehlt.length==0){
         return true;
     }
     let number = Number(sitz.substring(1))
-    for(let i=0;i<Ausgewaehlt.length;i++){
-        if((Math.abs(Number(Ausgewaehlt[i].substring(1))-number)<2) &&
-           sitz.substring(0,1)==Ausgewaehlt[i].substring(0,1)){
+    for(let i=0;i<ausgewaehlt.length;i++){
+        if((Math.abs(Number(ausgewaehlt[i].substring(1)) - number)<2) &&
+           sitz.substring(0,1)==ausgewaehlt[i].substring(0,1)){
             return true;
         }
     }
     return false;
 }
 
-async function createSitzreihe(StelleX, StelleY, SitzeProTisch, Tische, label, anfangsSitznummer, anfangsTischnummer){
-    for(let i=0;i<Tische;i++){
-        createRectangleWithText(StelleX+1,StelleY+i*(SitzeProTisch/2),1,SitzeProTisch/2,label+(i+anfangsTischnummer),TISCHFARBE)
+async function CreateSitzreihe(StelleX, StelleY, sitzeProTisch, tische, label, anfangsSitznummer, anfangsTischnummer){
+    for(let i=0;i<tische;i++){
+        CreateRectangleWithText(StelleX+1,StelleY+i*(sitzeProTisch/2),1,sitzeProTisch/2,label+(i+anfangsTischnummer),TISCHFARBE)
     }
-    for(let i=0;i<(SitzeProTisch*Tische);i++){
-        await createCircleWithText(i%2==0?StelleX:StelleX+2,
+    for(let i = 0; i < (sitzeProTisch * tische); i++){
+        await CreateCircleWithText(i%2==0?StelleX:StelleX+2,
                                 StelleY+Math.floor(i/2),
                                 1,label+(anfangsSitznummer+i))
     }
@@ -171,62 +171,62 @@ function interactDatabase(befehl){
 }
 
 //Planerstellung
-function loadSitzplan(){
-    let Spalten = []
-    for(let i=0;i<4;i++){
-        Spalten.push(1+i*16)
+function LoadSitzplan(){
+    let spalten = []
+    for(let i = 0; i < 4; i++){
+        spalten.push( 1 + i * 16)
     }
-    let Reihen = []
-    for(let i=0;i<11;i++){
-        Reihen.push(2+i*5)
+    let reihen = []
+    for(let i = 0; i < 11; i++){
+        reihen.push( 2 + i * 5)
     }
     
-    createSitzreihe(Reihen[0],Spalten[0],6,5,"V",1,1)
-    createSitzreihe(Reihen[0],Spalten[1],6,5,"A",1,1)
-    createSitzreihe(Reihen[0],Spalten[2],6,5,"A",31,6)
-    createSitzreihe(Reihen[0],Spalten[3],6,7,"A",61,11)
+    CreateSitzreihe(reihen[0],spalten[0],6,5,"V",1,1)
+    CreateSitzreihe(reihen[0],spalten[1],6,5,"A",1,1)
+    CreateSitzreihe(reihen[0],spalten[2],6,5,"A",31,6)
+    CreateSitzreihe(reihen[0],spalten[3],6,7,"A",61,11)
 
-    createSitzreihe(Reihen[1],Spalten[1],6,5,"B",1,1)
-    createSitzreihe(Reihen[1],Spalten[2],6,5,"B",31,6)
-    createSitzreihe(Reihen[1],Spalten[3],6,7,"B",61,11)
+    CreateSitzreihe(reihen[1],spalten[1],6,5,"B",1,1)
+    CreateSitzreihe(reihen[1],spalten[2],6,5,"B",31,6)
+    CreateSitzreihe(reihen[1],spalten[3],6,7,"B",61,11)
 
-    createSitzreihe(Reihen[2],Spalten[1],6,5,"C",1,1)
-    createSitzreihe(Reihen[2],Spalten[2],6,5,"C",31,6)
-    createSitzreihe(Reihen[2],Spalten[3],6,7,"C",61,11)
+    CreateSitzreihe(reihen[2],spalten[1],6,5,"C",1,1)
+    CreateSitzreihe(reihen[2],spalten[2],6,5,"C",31,6)
+    CreateSitzreihe(reihen[2],spalten[3],6,7,"C",61,11)
 
-    createSitzreihe(Reihen[3],Spalten[1],6,5,"D",1,1)
-    createSitzreihe(Reihen[3],Spalten[2],6,5,"D",31,6)
-    createSitzreihe(Reihen[3],Spalten[3],6,7,"D",61,11)
+    CreateSitzreihe(reihen[3],spalten[1],6,5,"D",1,1)
+    CreateSitzreihe(reihen[3],spalten[2],6,5,"D",31,6)
+    CreateSitzreihe(reihen[3],spalten[3],6,7,"D",61,11)
 
-    createSitzreihe(Reihen[4],Spalten[1],6,5,"E",1,1)
-    createSitzreihe(Reihen[4],Spalten[2],6,5,"E",31,6)
-    createSitzreihe(Reihen[4],Spalten[3],6,7,"E",61,11)
+    CreateSitzreihe(reihen[4],spalten[1],6,5,"E",1,1)
+    CreateSitzreihe(reihen[4],spalten[2],6,5,"E",31,6)
+    CreateSitzreihe(reihen[4],spalten[3],6,7,"E",61,11)
 
-    createSitzreihe(Reihen[5],Spalten[1],6,5,"F",1,1)
-    createSitzreihe(Reihen[5],Spalten[2],6,5,"F",31,6)
-    createSitzreihe(Reihen[5],Spalten[3],6,7,"F",61,11)
-    createCircleWithText(Reihen[5]+1,Spalten[3]+3*7,1,"F103")
+    CreateSitzreihe(reihen[5],spalten[1],6,5,"F",1,1)
+    CreateSitzreihe(reihen[5],spalten[2],6,5,"F",31,6)
+    CreateSitzreihe(reihen[5],spalten[3],6,7,"F",61,11)
+    CreateCircleWithText(reihen[5]+1,spalten[3]+3*7,1,"F103")
 
-    createSitzreihe(Reihen[6],Spalten[1],6,5,"G",1,1)
-    createSitzreihe(Reihen[6],Spalten[2],6,5,"G",31,6)
-    createSitzreihe(Reihen[6],Spalten[3],6,7,"G",61,11)
+    CreateSitzreihe(reihen[6],spalten[1],6,5,"G",1,1)
+    CreateSitzreihe(reihen[6],spalten[2],6,5,"G",31,6)
+    CreateSitzreihe(reihen[6],spalten[3],6,7,"G",61,11)
 
-    createSitzreihe(Reihen[7],Spalten[1],6,5,"H",1,1)
-    createSitzreihe(Reihen[7],Spalten[2],6,5,"H",31,6)
-    createSitzreihe(Reihen[7],Spalten[3],6,7,"H",61,11)
+    CreateSitzreihe(reihen[7],spalten[1],6,5,"H",1,1)
+    CreateSitzreihe(reihen[7],spalten[2],6,5,"H",31,6)
+    CreateSitzreihe(reihen[7],spalten[3],6,7,"H",61,11)
 
-    createSitzreihe(Reihen[8],Spalten[1],6,5,"I",1,1)
-    createSitzreihe(Reihen[8],Spalten[2],6,5,"I",31,6)
-    createSitzreihe(Reihen[8],Spalten[3],6,7,"I",61,11)
+    CreateSitzreihe(reihen[8],spalten[1],6,5,"I",1,1)
+    CreateSitzreihe(reihen[8],spalten[2],6,5,"I",31,6)
+    CreateSitzreihe(reihen[8],spalten[3],6,7,"I",61,11)
 
-    createSitzreihe(Reihen[9],Spalten[1],6,5,"J",1,1)
-    createSitzreihe(Reihen[9],Spalten[2],6,5,"J",31,6)
-    createSitzreihe(Reihen[9],Spalten[3],6,7,"J",61,11)
+    CreateSitzreihe(reihen[9],spalten[1],6,5,"J",1,1)
+    CreateSitzreihe(reihen[9],spalten[2],6,5,"J",31,6)
+    CreateSitzreihe(reihen[9],spalten[3],6,7,"J",61,11)
 
-    createSitzreihe(Reihen[10],Spalten[0],6,5,"Z",1,1)
-    createSitzreihe(Reihen[10],Spalten[1],6,5,"K",1,1)
-    createSitzreihe(Reihen[10],Spalten[2],6,5,"K",31,6)
-    createSitzreihe(Reihen[10],Spalten[3],6,5,"K",61,11)
+    CreateSitzreihe(reihen[10],spalten[0],6,5,"Z",1,1)
+    CreateSitzreihe(reihen[10],spalten[1],6,5,"K",1,1)
+    CreateSitzreihe(reihen[10],spalten[2],6,5,"K",31,6)
+    CreateSitzreihe(reihen[10],spalten[3],6,5,"K",61,11)
 }
 
 

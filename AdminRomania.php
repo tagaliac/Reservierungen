@@ -21,7 +21,7 @@
             }
         ?>
     </head>
-    <body onload="initSprache();loadSitzplan();">
+    <body onload="initSprache();LoadSitzplan();">
         <!-- Der Header zur Spracheinstellungen -->
         <header>
             <nav>
@@ -59,7 +59,7 @@
                     </select><br>
                     <label for="anzahlSitze", id="RES_AUTO_SEAT">Sitze automatisch gewählt?:</label>
                     <input class="input" type="number" id="anzahlSitze" value="1" min="1"></br></br>
-                    <button class="submit" id="RES_SUMMIT" onclick="setReservierung_passwort()">
+                    <button class="submit" id="RES_SUMMIT" onclick="SetReservierungAndReload()">
                         Bestätige Reservierung
                     </button>
                     <br><a id="setSitze"><a>
@@ -73,7 +73,7 @@
                     </select>
                     <label for="inhalt" id="GET_VAL">Inhalt:</label>
                     <input class="input" type="text" id="inhalt"></br>
-                    <button class="submit" id="GET_SUMMIT" onclick="getReservierung()">
+                    <button class="submit" id="GET_SUMMIT" onclick="GetReservierung()">
                         Suche
                     </button>
 				</td>
@@ -81,7 +81,7 @@
                     <label for="delete" id="DEL_RES">Lösche Reservierung mit ID:</label>
                     <input class="input" type="number" id="delete"></br>
                     <button class="submit" id="DEL_SUMMIT"
-                        onclick="deleteReservierung_passwort(document.getElementById('delete').value,true,true)">
+                        onclick="DeleteReservierung_passwort(document.getElementById('delete').value,true,true)">
                         Lösche Reservierung
                     </button>
 				</td>
@@ -94,7 +94,7 @@
                         <option value="nein" id="PAY_VAL_NO">Nein</option>
                     </select><br>
                     <button class="submit" id="PAY_SUMMIT"
-                         onclick="setBezahlung_passwort(document.getElementById('bezahltKundenname').value,document.getElementById('bezahlt').value)">
+                         onclick="SetBezahlung_passwort(document.getElementById('bezahltKundenname').value,document.getElementById('bezahlt').value)">
                         Setzt Bezahlung
                     </button>
 				</td>

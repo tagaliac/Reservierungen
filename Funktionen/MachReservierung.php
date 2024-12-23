@@ -22,45 +22,48 @@
 
     /**coding */
     if($_SERVER["REQUEST_METHOD"]=="POST"){
-        $con=connectToDB();
+        $con = connectToDB();
         $action = $_POST['Action'];
-        if($con){
-            /**Wählt Aktion */
-            switch ($action){
-                case "set":
-                    $Sitz = htmlspecialchars($_POST['Sitz']);
-                    $Kundennamen = htmlspecialchars($_POST['Kundenname']);
-                    $Bezahlort = htmlspecialchars($_POST['Bezahlort']);
-                    $Email = htmlspecialchars($_POST['Email']);
-                    echo setReservierung($Kundennamen,$Sitz,$Bezahlort,$Email,$con);
-                    break;
-                case "get":
-                    $auswahl = $_POST['Auswahl'];
-                    $inhalt = htmlspecialchars($_POST['Inhalt']);
-                    echo getReservierung($auswahl,$inhalt,$con);
-                    break;
-                case "getFreienSitz":
-                    echo getFreiePlätze($con,$_POST['anzahl']);
-                    break;
-                case "delete":
-                    echo deleteReservierung($_POST['Inhalt'],$con);
-                    break;
-                case "Bezahlung":
-                    echo setBezahlung($_POST["Kundenname"],$_POST['Inhalt'],$con);
-                    break;
-                case "Sprache":
-                    $GLOBAL_VALIABLE->Sprache=$_POST["newLanguage"];
-                    $newJsonString = json_encode($GLOBAL_VALIABLE);
-                    file_put_contents($GLOBAL_VALIABLE_FILE, $newJsonString);
-                    break;
-                default:
-                    $connect = mysqli_query($con, $action);
-                    if(!$connect){
-                        throw "Befehl könnte nicht verarbeitet werden";
-                    }else{
-                        echo mysqli_fetch_array($connect)[0];
-                    }
-            }
+
+        if(!$con)
+        {
+            return;
+        }
+        /**Wählt Aktion */
+        switch ($action){
+            case "set":
+                $Sitz = htmlspecialchars($_POST['Sitz']);
+                $Kundennamen = htmlspecialchars($_POST['Kundenname']);
+                $Bezahlort = htmlspecialchars($_POST['Bezahlort']);
+                $Email = htmlspecialchars($_POST['Email']);
+                echo setReservierung($Kundennamen,$Sitz,$Bezahlort,$Email,$con);
+                break;
+            case "get":
+                $auswahl = $_POST['Auswahl'];
+                $inhalt = htmlspecialchars($_POST['Inhalt']);
+                echo getReservierung($auswahl,$inhalt,$con);
+                break;
+            case "getFreienSitz":
+                echo getFreiePlätze($con,$_POST['anzahl']);
+                break;
+            case "delete":
+                echo deleteReservierung($_POST['Inhalt'],$con);
+                break;
+            case "Bezahlung":
+                echo setBezahlung($_POST["Kundenname"],$_POST['Inhalt'],$con);
+                break;
+            case "Sprache":
+                $GLOBAL_VALIABLE->Sprache=$_POST["newLanguage"];
+                $newJsonString = json_encode($GLOBAL_VALIABLE);
+                file_put_contents($GLOBAL_VALIABLE_FILE, $newJsonString);
+                break;
+            default:
+                $connect = mysqli_query($con, $action);
+                if(!$connect){
+                    throw "Befehl könnte nicht verarbeitet werden";
+                }else{
+                    echo mysqli_fetch_array($connect)[0];
+                }
         }
     }
 
@@ -137,44 +140,48 @@
 
     /**gibt basierend auf die jeweiligen Suchdaten alle Reservierungsdaten zurück */
     function getReservierung($auswahl,$inhalt,$con){
-        switch ($auswahl){
-            case "Name":
-                $connect = mysqli_query($con, "select kunde.Kundenname as Kundennamen, sitzplatz.SitzplatzLabel as Sitzplatz,
+        $kundenId = GetKundeVonInfo($auswahl,$inhalt,$con);
+        if($kundenId === ""){
+            return translate("GET_FAIL");
+        }
+
+        $connect = mysqli_query($con, "select kunde.Kundenname as Kundennamen, sitzplatz.SitzplatzLabel as Sitzplatz,
                                             reservierung.ReservierungsID, kunde.Bezahlort, kunde.Gezahlt from reservierung
                                             join kunde on reservierung.KundenID = kunde.KundenID
                                             join sitzplatz on reservierung.SitzplatzLabel = sitzplatz.SitzplatzLabel
-                                            WHERE kunde.Kundenname='$inhalt';");
-                if(!$connect){
-                    return translate("GET_FAIL");
-                }else{
-                    return getStringFromReservierungsdaten($connect);
-                }
-                break;
-            case "Sitz":
-                $connect = mysqli_query($con, "select kunde.Kundenname as Kundennamen, sitzplatz.SitzplatzLabel as Sitzplatz,
-                                            reservierung.ReservierungsID, kunde.Bezahlort, kunde.Gezahlt from reservierung
-                                            join kunde on reservierung.KundenID = kunde.KundenID
-                                            join sitzplatz on reservierung.SitzplatzLabel = sitzplatz.SitzplatzLabel
-                                            WHERE sitzplatz.SitzplatzLabel='$inhalt';");
-                if(!$connect){
-                    return translate("GET_FAIL");
-                }else{
-                    return getStringFromReservierungsdaten($connect);
-                }
-                break;
-            default:
-                $connect = mysqli_query($con, "select kunde.Kundenname as Kundennamen, sitzplatz.SitzplatzLabel as Sitzplatz,
-                                        reservierung.ReservierungsID, kunde.Bezahlort, kunde.Gezahlt from reservierung
-                                        join kunde on reservierung.KundenID = kunde.KundenID
-                                        join sitzplatz on reservierung.SitzplatzLabel = sitzplatz.SitzplatzLabel
-                                        WHERE reservierung.ReservierungsID='$inhalt';");
-                if(!$connect){
-                    return translate("GET_FAIL");
-                }else{
-                    return getStringFromReservierungsdaten($connect);
-                }
+                                            WHERE kunde.KundenID='$kundenId';");
+        if(!$connect){
+            return translate("GET_FAIL");
+        }else{
+            return getStringFromReservierungsdaten($connect);
         }
     }
+
+    function GetKundeVonInfo($auswahl,$inhalt,$con){
+        switch ($auswahl){
+            case "Name":
+                $connect = mysqli_query($con, "SELECT KundenID FROM kunde WHERE Kundenname = '$inhalt'");
+                break;
+            case "Sitz":
+                $connect = mysqli_query($con, "SELECT KundenID FROM reservierung WHERE SitzplatzLabel = '$inhalt'");
+                break;
+            default:
+                $connect = mysqli_query($con, "SELECT KundenID FROM reservierung WHERE ReservierungsID = '$inhalt'");
+        }
+
+        if(!$connect){
+            return "";
+        }else{
+            $rows = mysqli_fetch_all($connect, MYSQLI_ASSOC);
+            if(count($rows)!=1){
+                return "";
+            }
+            foreach ($rows as $row){
+                return $row["KundenID"];
+            }
+        }
+    }
+
     /**verarbeitet die gesuchten Reservierungsdaten in einem Text 
     */
     function getStringFromReservierungsdaten($connect){
@@ -195,8 +202,8 @@
             break;
         }
         return translate("CLI") . $name . "| " 
-                . translate("SEAT") . $Sitzplatz . "| " 
-                . translate("RES") . $Reservierung . "| "
+                . translate("SEAT") . substr($Sitzplatz,0,-1) . "| " 
+                . translate("RES") . substr($Reservierung,0,-1) . "| "
                 . translate("LOC") . $Bezahlort . "| "
                 . translate("PAY") . $gezahlt . "\n"; 
     }

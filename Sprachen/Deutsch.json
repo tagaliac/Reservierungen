@@ -6,6 +6,7 @@
     "ADD_PAY_TITLE":"Ist schon bezahlt",
     "RES_NAME":"Name des Kunden:",
     "RES_EMAIL":"Email:",
+    "RES_TEL":"Telefon:",
     "RES_CONF_EMAIL":"Email bestätigen:",
     "RES_LOC":"Wählen Sie Abholort aus:",
     "RES_AUTO_SEAT":"Sitze automatisch gewählt?:",

@@ -1,14 +1,19 @@
-/**Konstanten */
+/**Konstanten und Variablen */
 const URL = "Funktionen/MachReservierung.php";
-const VEREINS_EMAIL = "iromania@pontos-stuttgart.de"; //hier gehört Email vom Verein
-const KUNDEN_NACHRICHT = "test"; //hier gehört Nachricht an den Kunden
+var vereinsEmail = "";
+var kundenNachricht = "test";
 const VEREINS_NAME = "Romania"; //hier gehört Name vom Emailaccount vom Verein
 const VEREINS_NACHRICHT = "bestätigt"; //hier gehört Nachricht in der Bestätigungsemail vom Verein
-const PASSWORT = "ja"; //Erstelle Passwort zur Bestätigung
+var passwort = "";
 var sprache = "Deutsch"; //Standardsprache
 var DEBUG_MODUS = false;
 
 ladeDebugModus().then(data => {DEBUG_MODUS = data;});
+ladeDatenJson().then(data => {
+    passwort = data['Bestaetigungspasswort'];
+    vereinsEmail = data['Vereinsemail'];
+    kundenNachricht = data["KundenNachricht"];
+})
 
 /**fügt die Rerservierung nach Passwortüberprüfung hinzu (Variablen in den Feldern definiert) und ladet Sitzplan neu*/
 async function setReservierung_passwort(){
@@ -65,9 +70,9 @@ async function SetReservierung(){
     }
     for(let i = 0; i < Sitze.length; i++){
         await SetReservierungInDB(Kundenname, Sitze[i], Bezahlort, Email, Telefon).then(data=>{
-            sendMail(Email,Kundenname,KUNDEN_NACHRICHT).then(data1 =>{
+            sendMail(Email,Kundenname,kundenNachricht).then(data1 =>{
                 document.getElementById('output').innerHTML = data + ". " + data1;
-                sendMail(VEREINS_EMAIL, VEREINS_NAME, VEREINS_NACHRICHT)
+                sendMail(vereinsEmail, VEREINS_NAME, VEREINS_NACHRICHT)
             }).catch(e => {
                 makeCommand("SELECT ReservierungsID FROM reservierung WHERE SitzplatzLabel='"+Sitze[i]+"';").then(data=>{
                     DeleteReservierungAndReload(data,false,false);
@@ -292,5 +297,5 @@ async function NichtBestätigt(key,value,Sprache){
 
 /**checkt ob Passwort richtig ist */
 function CheckPasswort(){
-    return document.getElementById('pass').value === PASSWORT;
+    return document.getElementById('pass').value === passwort;
 }

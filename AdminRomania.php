@@ -51,6 +51,8 @@
                     <input class="input" type="text" id="email"></br>
                     <label for="BestatigeEmail" id="RES_CONF_EMAIL">Email bestätigen:</label>
                     <input class="input" type="text" id="BestatigeEmail"></br>
+                    <label for="Telefon" id="RES_TEL">Telefonnummer:</label>
+                    <input class="input" type="text" id="telefon"></br>
                     <label for="wahl" id="RES_LOC">Wählen Sie Abholort aus:</label>
                     <select class="Auswahl" name="Auswahl" id="wahl">
                         <option value="Cannstatt">Mellyriton Bad Cannstatt</option>

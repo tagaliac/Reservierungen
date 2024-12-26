@@ -1,4 +1,5 @@
-const GLOBALE_VARIABLE_LINK ="./Globale_Variablen.json";
+const GLOBALE_VARIABLE_LINK = "./Globale_Variablen.json";
+const DATEN_LINK = "./Daten.json"
 
 async function initSprache(Sprache){
     if(Sprache == null){
@@ -80,6 +81,14 @@ function ladeDebugModus(){
     return new Promise((resolve,reject) => {
         fetch(GLOBALE_VARIABLE_LINK).then((response) => response.json()).then(data => {
             resolve(data['DEBUG_MODUS']);
+        }).catch(error => reject(error))
+    }) 
+}
+
+function ladeDatenJson(){
+    return new Promise((resolve,reject) => {
+        fetch(DATEN_LINK).then((response) => response.json()).then(data => {
+            resolve(data);
         }).catch(error => reject(error))
     }) 
 }

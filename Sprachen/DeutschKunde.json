@@ -2,8 +2,9 @@
     "TITLE":"Reservierung",
     "SET_NAME":"Geben Sie Ihren Namen an:",
     "SET_MAIL":"Geben Sie Ihre Email-Adresse an:",
+    "SET_TEL":"Geben Sie Ihre Telefonnummer an:",
     "SET_LOC":"Wählen Sie Abholort aus:",
-    "SET_SEAT":"Wählen Sie Ihre Sitze aus. Wenn kein Sitz gewählt ist, werden automatisch die Nächsten gewählt ",
+    "SET_SEAT":"Wählen Sie Ihre Sitze aus. Wenn kein Sitz gewählt ist, werden automatisch die Nächsten gewählt. ",
     "SET_MAIL_CONF":"Bestätigen Sie Ihre Email:",
     "AMOUNTH_SEAT":"Wie viele Sitze werden automatisch ausgewählt, sofern Sie nichts auswählen?:",
     "RES_SUB":"Bestätige Reservierung"

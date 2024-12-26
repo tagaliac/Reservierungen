@@ -81,6 +81,12 @@ async function WähleSitzeAus(event){
     }).catch(error => {TranslateError(error,Sprache)})
 }
 
+function ClearAusgewaelt(){
+    ausgewaehlt = []
+    sitzeAuswahl.innerHTML = ""
+    speicher.value = "";
+}
+
 
 /**Funktionen zur Erstellung von Sitzen und Tischen */ 
 function toCoX(Stelle){

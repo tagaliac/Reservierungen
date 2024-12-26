@@ -8,7 +8,7 @@
         <script type="text/JavaScript" src=".\Funktionen\Oberfläche.js"></script>
         <script type="text/JavaScript" src=".\Funktionen\Reservierungsscript.js"></script>
         <?php 
-           /**import global variables */
+            /**import global variables */
             $DEBUG_MODUS = json_decode(file_get_contents(".\Globale_Variablen.json"),false)->DEBUG_MODUS;
 
             if($DEBUG_MODUS){

@@ -10,9 +10,7 @@ async function initSprache(Sprache){
 
 async function initKundenSprache(Sprache){
     if(Sprache == null){
-        await ladeSprache().then(data => {
-            Sprache = data
-        }).catch();
+        Sprache = await ladeSprache();
     }
     Sprache += "Kunde";
 
@@ -74,7 +72,7 @@ function setWord(id, text){
 
 function setLanguage(translater){
     for(let value in translater){
-        setWord(value,translater[value]);
+        setWord(value, translater[value]);
     }
 }
 

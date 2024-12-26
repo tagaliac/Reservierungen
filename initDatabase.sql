@@ -7,7 +7,8 @@ create table kunde(
     Kundenname varchar(127) NOT NULL,
     Gezahlt boolean DEFAULT 0,
     Bezahlort varchar(31),
-    Email varchar(127)
+    Email varchar(127),
+    Telefon varchar(31)
 );
 
 create table sitzplatz(

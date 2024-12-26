@@ -41,6 +41,7 @@ async function SetReservierung(){
         return;
     }
     let Email = document.getElementById('email').value;
+    let Telefon = document.getElementById('telefon').value;
 
     let AnzahlAutoSitze;
     try{
@@ -63,9 +64,9 @@ async function SetReservierung(){
         if(AnzahlAutoSitze < 0){document.getElementById('output').innerHTML = await getTranslationFromAusgabe("NO_SEAT_LEFT",sprache);}
     }
     for(let i = 0; i < Sitze.length; i++){
-        await SetReservierungInDB(Kundenname, Sitze[i], Bezahlort, Email).then(data=>{
+        await SetReservierungInDB(Kundenname, Sitze[i], Bezahlort, Email, Telefon).then(data=>{
             sendMail(Email,Kundenname,KUNDEN_NACHRICHT).then(data1 =>{
-                document.getElementById('output').innerHTML=data+". "+data1;
+                document.getElementById('output').innerHTML = data + ". " + data1;
                 sendMail(VEREINS_EMAIL, VEREINS_NAME, VEREINS_NACHRICHT)
             }).catch(e => {
                 makeCommand("SELECT ReservierungsID FROM reservierung WHERE SitzplatzLabel='"+Sitze[i]+"';").then(data=>{
@@ -74,14 +75,16 @@ async function SetReservierung(){
             })
         }).catch(e => document.getElementById('output').innerHTML=e);
     }
+
+    ClearAusgewaelt();
 }
 /**fügt die Rerservierung in der Datenbank hinzu */
-function SetReservierungInDB(Kundenname, Sitz, Bezahlort, Email){
+function SetReservierungInDB(Kundenname, Sitz, Bezahlort, Email, Telefon){
     return new Promise((resolve,reject) =>{
         $.ajax({
             url: URL,
             type: "POST",
-            data: {Action:"set",Kundenname:Kundenname,Sitz:Sitz,Bezahlort:Bezahlort, Email:Email},
+            data: {Action:"set", Kundenname:Kundenname, Sitz:Sitz, Bezahlort:Bezahlort, Email:Email, Telefon:Telefon},
             success: function(data){
                 console.log("-> reservierung erfolgreich ", data);
                 resolve(data)

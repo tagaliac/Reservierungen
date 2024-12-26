@@ -36,7 +36,8 @@
                 $Kundennamen = htmlspecialchars($_POST['Kundenname']);
                 $Bezahlort = htmlspecialchars($_POST['Bezahlort']);
                 $Email = htmlspecialchars($_POST['Email']);
-                echo setReservierung($Kundennamen,$Sitz,$Bezahlort,$Email,$con);
+                $Telefon = htmlspecialchars($_POST['Telefon']);
+                echo setReservierung($Kundennamen,$Sitz,$Bezahlort,$Email,$Telefon,$con);
                 break;
             case "get":
                 $auswahl = $_POST['Auswahl'];
@@ -53,7 +54,7 @@
                 echo setBezahlung($_POST["Kundenname"],$_POST['Inhalt'],$con);
                 break;
             case "Sprache":
-                $GLOBAL_VALIABLE->Sprache=$_POST["newLanguage"];
+                $GLOBAL_VALIABLE->Sprache = $_POST["newLanguage"];
                 $newJsonString = json_encode($GLOBAL_VALIABLE);
                 file_put_contents($GLOBAL_VALIABLE_FILE, $newJsonString);
                 break;
@@ -82,7 +83,7 @@
     /**fügt einen Reservierungseintrag hinzu.
      * Wenn der Kunde nicht existiert wird dieser auch erstellt.
      */
-    function setReservierung($Kundennamen, $Sitz, $Bezahlort,$Email, $con){
+    function setReservierung($Kundennamen, $Sitz, $Bezahlort,$Email,$Telefon, $con){
         /**Vorbedienungen */
         if($Kundennamen==null){
             return translate("NAME_MISS");
@@ -99,7 +100,7 @@
 
         /**Kunden finden */
         if(getKundenID($Kundennamen,$con)==0){
-            fügeKundenHinzu($Kundennamen,$Bezahlort,$Email,$con);
+            fügeKundenHinzu($Kundennamen,$Bezahlort,$Email,$Telefon,$con);
         }
         $Kunde = getKundenID($Kundennamen,$con);
         if(getBezahlung($Kunde,$con)){
@@ -118,8 +119,8 @@
     }
 
     /**fügt Kundeneintrag hinzu */
-    function fügeKundenHinzu($Kundennamen,$Bezahlort,$Email,$con){
-        $connect = mysqli_query($con, "INSERT INTO kunde(Kundenname,Bezahlort,Email) VALUES ('$Kundennamen','$Bezahlort','$Email');");
+    function fügeKundenHinzu($Kundennamen,$Bezahlort,$Email,$Telefon,$con){
+        $connect = mysqli_query($con, "INSERT INTO kunde(Kundenname,Bezahlort,Email,Telefon) VALUES ('$Kundennamen','$Bezahlort','$Email','$Telefon');");
         if(!$connect){
             translate("GET_CLI_FAIL");
         }else{

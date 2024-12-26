@@ -100,6 +100,7 @@ function GetReservierung(){
     let Inhalt = document.getElementById('inhalt').value;
     GetReservierungDB(Auswahl,Inhalt);
 }
+
 /**gibt alle Reservierungsdaten aus der Datenbank zurück */
 function GetReservierungDB(Auswahl, Inhalt){
     $.ajax({

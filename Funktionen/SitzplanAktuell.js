@@ -1,8 +1,8 @@
 /**Konstanten */
 const canvas = document.getElementById("bild");
 const bild = canvas.getContext("2d");
-const WIDTHBOX= 22; 
-const HEIGHTBOX= WIDTHBOX; 
+const WIDTHBOX = 22; 
+const HEIGHTBOX = WIDTHBOX; 
 const TEXTOFFSET_WIDTH = 10;
 const TEXTOFFSET_HEIGHT = 2;
 const sitzeAuswahl= document.getElementById("setSitze");
@@ -40,33 +40,45 @@ canvas.addEventListener("mousedown",(e) => {
 /**Wählt sitzt aus und legt es in der Schlange */
 async function WähleSitzeAus(event){
     const sitz = getSitz(getMousePos(canvas,event))
-    Sprache= await ladeSprache();
-    if(sitz!=null){
-        if(!NebenAusgewählteSitzplätze(sitz)){
-            TranslateError("NEAR_SEAT",Sprache)
-            return
+    Sprache = await ladeSprache();
+
+    if(sitz == null){
+        return
+    }
+    if(!NebenAusgewählteSitzplätze(sitz)){
+        TranslateError("NEAR_SEAT", Sprache)
+        return
+    }
+
+    let noSeat = await getTranslationFromAusgabe("NOTHING_CHOOSE", Sprache);
+
+    interactDatabase("SELECT belegt FROM sitzplatz WHERE SitzplatzLabel = '" + sitz + "';").then(data => {
+        if(data == 1){
+            LoadSitzplan();
+            throw "BELEGT";
         }
-        interactDatabase("SELECT belegt FROM sitzplatz WHERE SitzplatzLabel = '"+sitz+"';").then(data => {
-            if(data==1){
-                LoadSitzplan();
-                throw "BELEGT";
-            }
-            return getTranslationFromAusgabe("CHOOSE",Sprache)
+        return getTranslationFromAusgabe("CHOOSE", Sprache)
         }).then(data => {
-            sitzeAuswahl.innerHTML =data;
-                if(ausgewaehlt.includes(sitz)){
-                    ausgewaehlt.splice(ausgewaehlt.indexOf(sitz),1)
-                }else{
-                    ausgewaehlt.push(sitz);
+            sitzeAuswahl.innerHTML = data;
+            if(ausgewaehlt.includes(sitz)){
+                if(IsRandSitz(sitz)){
+                    ausgewaehlt.splice(ausgewaehlt.indexOf(sitz), 1)
                 }
-                speicherort = speicher.value
+            }else{
+                ausgewaehlt.push(sitz);
+            }
+
+            speicherort = speicher.value
+            if(ausgewaehlt.length == 0){
+                sitzeAuswahl.innerHTML = noSeat
+            }else{
                 ausgewaehlt.forEach((value) => {
-                    sitzeAuswahl.innerHTML += " "+value
-                    speicher.value = speicherort +"/"+ value;
+                    sitzeAuswahl.innerHTML += " " + value
+                    speicher.value = speicherort + "/" + value;
                 })
-                output.innerHTML = "";
-        }).catch(error => {TranslateError(error,Sprache)})
-    } 
+            }
+            output.innerHTML = "";
+    }).catch(error => {TranslateError(error,Sprache)})
 }
 
 
@@ -88,28 +100,28 @@ function createRectangle(StelleX, StelleY, width, heigth, color){
     bild.beginPath();
     bild.fillStyle = color;
     bild.strokeStyle = RANDFARBE;
-    bild.fillRect(toCoX(StelleX),toCoY(StelleY), width*WIDTHBOX, heigth*HEIGHTBOX);
-    bild.strokeRect(toCoX(StelleX),toCoY(StelleY), width*WIDTHBOX, heigth*HEIGHTBOX);
+    bild.fillRect(toCoX(StelleX),toCoY(StelleY), width * WIDTHBOX, heigth * HEIGHTBOX);
+    bild.strokeRect(toCoX(StelleX),toCoY(StelleY), width * WIDTHBOX, heigth * HEIGHTBOX);
 }
 function CreateRectangleWithText(StelleX, StelleY, width, heigth, text, color){
     bild.beginPath();
-    createRectangle(StelleX,StelleY,width,heigth,color);
+    createRectangle(StelleX, StelleY, width, heigth, color);
     bild.fillStyle = TEXTFARBE;
-    bild.fillText(text,toCoX(StelleX)+(WIDTHBOX*width)/TEXTOFFSET_WIDTH,toCoY(StelleY)+(heigth*HEIGHTBOX)/TEXTOFFSET_HEIGHT)
+    bild.fillText(text, toCoX(StelleX) + (WIDTHBOX * width) / TEXTOFFSET_WIDTH, toCoY(StelleY) + (heigth * HEIGHTBOX) / TEXTOFFSET_HEIGHT)
 }
 
-async function CreateCircleWithText(StelleX,StelleY,radius,text){
-    await interactDatabase("INSERT INTO sitzplatz(SitzplatzLabel) VALUES ('"+text+"')").then((e) => {
-        interactDatabase("SELECT Belegt FROM sitzplatz WHERE SitzplatzLabel='"+text+"';").then((data)=>{
+async function CreateCircleWithText(StelleX, StelleY, radius, text){
+    await interactDatabase("INSERT INTO sitzplatz(SitzplatzLabel) VALUES ('" + text + "')").then((e) => {
+        interactDatabase("SELECT Belegt FROM sitzplatz WHERE SitzplatzLabel='" + text + "';").then((data)=>{
             bild.beginPath();
-            bild.fillStyle = data[0]==0?NICHT_BELEGTFARBE:BELEGTFARBE;
+            bild.fillStyle = data[0] == 0 ? NICHT_BELEGTFARBE : BELEGTFARBE;
             bild.strokeStyle = RANDFARBE;
-            bild.arc(toCoX(StelleX)+WIDTHBOX/2,toCoY(StelleY)+HEIGHTBOX/2,radius*WIDTHBOX/2,0,2*Math.PI)
+            bild.arc(toCoX(StelleX) + WIDTHBOX / 2, toCoY(StelleY) + HEIGHTBOX / 2, radius * WIDTHBOX / 2, 0, 2 * Math.PI)
             bild.fill()
             bild.stroke()
             bild.fillStyle = TEXTFARBE;
-            bild.fillText(text,toCoX(StelleX)+(WIDTHBOX*radius)/TEXTOFFSET_WIDTH,toCoY(StelleY)+(radius*HEIGHTBOX)/TEXTOFFSET_HEIGHT)
-            Sitze.set(text,{x:StelleX,y:StelleY})
+            bild.fillText(text, toCoX(StelleX) + (WIDTHBOX * radius) / TEXTOFFSET_WIDTH, toCoY(StelleY) + (radius * HEIGHTBOX) / TEXTOFFSET_HEIGHT)
+            Sitze.set(text, {x:StelleX,y:StelleY})
         }).catch((error) => {console.log(error)})
     }).catch((error) => {console.log(error)})
 }
@@ -119,8 +131,8 @@ function getSitz(pos){
     let y = fromCoY(pos.y)
     let result = null
     Sitze.forEach(function(values, key){
-        if(values.x==x && values.y==y){
-            result=key;
+        if(values.x == x && values.y == y){
+            result = key;
             return;
         }
     });
@@ -128,22 +140,39 @@ function getSitz(pos){
 }
 
 function NebenAusgewählteSitzplätze(sitz){
-    if(ausgewaehlt.length==0){
+    if(ausgewaehlt.length == 0){
         return true;
     }
     let number = Number(sitz.substring(1))
-    for(let i=0;i<ausgewaehlt.length;i++){
-        if((Math.abs(Number(ausgewaehlt[i].substring(1)) - number)<2) &&
-           sitz.substring(0,1)==ausgewaehlt[i].substring(0,1)){
+    for(let i = 0; i < ausgewaehlt.length; i++){
+        if((Math.abs(Number(ausgewaehlt[i].substring(1)) - number) < 2) &&
+           sitz.substring(0, 1) == ausgewaehlt[i].substring(0, 1)){
             return true;
         }
     }
     return false;
 }
 
+function IsRandSitz(sitz){
+    let selbeSitzReihe = []
+    //for (const wahl in ausgewaehlt)
+    ausgewaehlt.forEach(element => {
+        if(element[0] == sitz[0]){
+            selbeSitzReihe.push(element)
+        }
+    });
+
+    selbeSitzReihe.sort();
+
+    if(sitz == selbeSitzReihe[0] || sitz == selbeSitzReihe[selbeSitzReihe.length - 1]){
+        return true
+    }
+    return false
+}
+
 async function CreateSitzreihe(StelleX, StelleY, sitzeProTisch, tische, label, anfangsSitznummer, anfangsTischnummer){
-    for(let i=0;i<tische;i++){
-        CreateRectangleWithText(StelleX+1,StelleY+i*(sitzeProTisch/2),1,sitzeProTisch/2,label+(i+anfangsTischnummer),TISCHFARBE)
+    for(let i = 0; i < tische; i++){
+        CreateRectangleWithText(StelleX + 1, StelleY + i * (sitzeProTisch / 2), 1, sitzeProTisch / 2, label + (i + anfangsTischnummer), TISCHFARBE)
     }
     for(let i = 0; i < (sitzeProTisch * tische); i++){
         await CreateCircleWithText(i%2==0?StelleX:StelleX+2,
